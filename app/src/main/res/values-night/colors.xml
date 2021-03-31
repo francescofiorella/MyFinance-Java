@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Custom colors-->
+
+    <!--Theme colors-->
+    <color name="accent">@color/purple_200</color>
+    <color name="error">@color/cinnamon_satin</color>
+</resources>
