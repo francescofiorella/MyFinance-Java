@@ -5,4 +5,7 @@
     <!--Theme colors-->
     <color name="accent">@color/purple_200</color>
     <color name="error">@color/cinnamon_satin</color>
+    <color name="primary_text">@color/white</color>
+    <color name="inverted_primary_text">@color/black</color>
+    <color name="snackbar">#F4F4F4</color>
 </resources>

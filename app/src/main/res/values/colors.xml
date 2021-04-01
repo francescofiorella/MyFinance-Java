@@ -16,4 +16,7 @@
     <!--Theme colors-->
     <color name="accent">@color/purple_500</color>
     <color name="error">@color/carmine</color>
+    <color name="primary_text">@color/black</color>
+    <color name="inverted_primary_text">@color/white</color>
+    <color name="snackbar">#101D25</color>
 </resources>
