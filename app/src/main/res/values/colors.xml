@@ -14,7 +14,9 @@
     <color name="cinnamon_satin">#cf6679</color>
 
     <!--Theme colors-->
-    <color name="accent">@color/purple_500</color>
+    <color name="primary">#1976d2</color>
+    <color name="background">@color/white</color>
+    <color name="accent">@color/primary</color>
     <color name="error">@color/carmine</color>
     <color name="primary_text">@color/black</color>
     <color name="inverted_primary_text">@color/white</color>

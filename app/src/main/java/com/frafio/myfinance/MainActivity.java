@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         } else {
-            loginBtn.setText("Accedi");
+            loginBtn.setText("Log In");
             loginBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
