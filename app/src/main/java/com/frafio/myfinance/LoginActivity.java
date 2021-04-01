@@ -262,6 +262,7 @@ public class LoginActivity extends AppCompatActivity {
                     fStore.collection("users").document(fUser.getUid()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+                            MainActivity.CURRENTUSER = user;
                             Intent returnIntent = new Intent();
                             returnIntent.putExtra("com.frafio.myfinance.userRequest", true);
                             setResult(Activity.RESULT_OK, returnIntent);

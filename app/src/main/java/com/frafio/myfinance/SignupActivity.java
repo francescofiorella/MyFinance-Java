@@ -35,10 +35,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 public class SignupActivity extends AppCompatActivity {
 
     // definizione variabili
@@ -143,7 +139,7 @@ public class SignupActivity extends AppCompatActivity {
                 mProgressIndicator.show();
 
                 // register the user in firebase
-                register(fullName, email, password);
+                signUp(fullName, email, password);
             }
         });
 
@@ -156,7 +152,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     // register method
-    private void register(String fullName, String email, String password) {
+    private void signUp(String fullName, String email, String password) {
 
         fAuth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
@@ -213,6 +209,7 @@ public class SignupActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d("TAG", "onSuccess: user Profile is created for " + fUser.getUid());
+                        MainActivity.CURRENTUSER = user;
                         Intent returnIntent = new Intent();
                         setResult(Activity.RESULT_OK, returnIntent);
                         finish();
