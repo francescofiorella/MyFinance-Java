@@ -2,7 +2,6 @@ package com.frafio.myfinance;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
@@ -27,6 +26,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
     RelativeLayout layout;
     Typeface nunito;
 
-    Toolbar mToolbar;
+    MaterialToolbar mToolbar;
     TextInputLayout mEmailLayout, mPasswordLayout;
     TextInputEditText mEmail, mPassword;
     MaterialButton mLoginBtn, mGoogleBtn;

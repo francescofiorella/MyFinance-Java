@@ -16,17 +16,18 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/main_appBarLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/main_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
+                app:menu="@menu/toolbar_menu"
                 app:title="@string/app_name"
                 app:titleTextColor="@color/white"
-                app:titleTextAppearance="@style/TextAppearance.MyFinance.Toolbar.Title"/>
+                app:titleTextAppearance="@style/TextAppearance.MyFinance.Toolbar.Title"
+                style="@style/Widget.MaterialComponents.Toolbar.Primary"/>
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -102,16 +103,16 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.4">
+                app:layout_constraintWidth_percent="0.35">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/listImageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:padding="15dp"
                     android:layout_centerInParent="true"
                     android:src="@drawable/ic_list_alt"
+                    android:padding="5dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     app:tint="@color/nav_item_color" />
 
             </RelativeLayout>
@@ -129,10 +130,10 @@
                     android:id="@+id/profileImageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:padding="15dp"
+                    android:padding="5dp"
                     android:layout_centerInParent="true"
                     android:src="@drawable/ic_account_circle"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     app:tint="@color/nav_item_color" />
 
             </RelativeLayout>

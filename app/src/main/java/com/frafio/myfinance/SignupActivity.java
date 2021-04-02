@@ -2,7 +2,6 @@ package com.frafio.myfinance;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
@@ -20,6 +19,7 @@ import android.widget.TextView;
 import com.frafio.myfinance.objects.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -41,7 +41,7 @@ public class SignupActivity extends AppCompatActivity {
     RelativeLayout layout;
     Typeface nunito;
 
-    Toolbar mToolbar;
+    MaterialToolbar mToolbar;
     TextInputLayout mFullNameLayout, mEmailLayout, mPasswordLayout, mPasswordAgainLayout;
     TextInputEditText mFullName, mEmail, mPassword, mPasswordAgain;
     MaterialButton mSignupButton;

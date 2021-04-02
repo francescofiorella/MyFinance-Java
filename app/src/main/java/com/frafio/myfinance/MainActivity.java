@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import com.frafio.myfinance.objects.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     CoordinatorLayout layout;
     Typeface nunito;
 
-    Toolbar mToolbar;
+    MaterialToolbar mToolbar;
     TextView mUserNameTv, mEmailTv;
     MaterialButton mLoginBtn;
     FloatingActionButton mAddBtn;
@@ -70,6 +72,13 @@ public class MainActivity extends AppCompatActivity {
         mProfileLayout = findViewById(R.id.profileLayout);
         mList = findViewById(R.id.listImageView);
         mProfile = findViewById(R.id.profileImageView);
+
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                return true;
+            }
+        });
 
         updateCurrentUser();
         setBottomBar();

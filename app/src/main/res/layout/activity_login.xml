@@ -12,17 +12,17 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/login_appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/login_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:title="Accedi"
             app:titleTextColor="@color/white"
-            app:titleTextAppearance="@style/TextAppearance.MyFinance.Toolbar.Title"/>
+            app:titleTextAppearance="@style/TextAppearance.MyFinance.Toolbar.Title"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
