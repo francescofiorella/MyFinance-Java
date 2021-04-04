@@ -20,7 +20,7 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.TextView;
 
 import com.frafio.myfinance.fragments.AddFragment;
-import com.frafio.myfinance.fragments.HomeFragment;
+import com.frafio.myfinance.fragments.DashboardFragment;
 import com.frafio.myfinance.fragments.ListFragment;
 import com.frafio.myfinance.fragments.ProfileFragment;
 import com.frafio.myfinance.fragments.SettingsFragment;
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             switch (num) {
                 case 1:
                     mFragmentTitle.setText("Dashboard");
-                    mFragmentToSet = new HomeFragment();
+                    mFragmentToSet = new DashboardFragment();
                     break;
                 case 2:
                     mFragmentTitle.setText("Lista");
