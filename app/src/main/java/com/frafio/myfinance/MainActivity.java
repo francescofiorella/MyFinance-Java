@@ -29,7 +29,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -85,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.home:
+                    case R.id.dashboard:
                         setFragment(1);
                         break;
                     case R.id.list:
@@ -107,17 +106,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (currentFragment == 5) {
                     setFragment(1);
-                    mBottomNavigationView.setSelectedItemId(R.id.home);
+                    mBottomNavigationView.setSelectedItemId(R.id.dashboard);
                 } else {
                     setFragment(5);
                     mBottomNavigationView.setSelectedItemId(R.id.placeholder);
-                    mAddBtn.animate().setInterpolator(interpolator).rotation(45f).setDuration(150).start();
                 }
             }
         });
     }
 
-    private void setFragment(int num) {
+    public void setFragment(int num) {
         if (currentFragment != num) {
             Fragment mFragmentToSet = null;
             switch (num) {
@@ -140,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 case 5:
                     mFragmentTitle.setText("Acquisto");
                     mFragmentToSet = new AddFragment();
+                    mAddBtn.animate().setInterpolator(interpolator).rotation(45f).setDuration(150).start();
                     break;
             }
             if (currentFragment == 5) {
@@ -203,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (currentFragment != 1) {
             setFragment(1);
-            mBottomNavigationView.setSelectedItemId(R.id.home);
+            mBottomNavigationView.setSelectedItemId(R.id.dashboard);
         } else {
             super.onBackPressed();
         }

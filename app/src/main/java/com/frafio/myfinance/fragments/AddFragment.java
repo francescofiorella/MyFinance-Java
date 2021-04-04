@@ -1,6 +1,10 @@
 package com.frafio.myfinance.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +18,14 @@ import androidx.fragment.app.Fragment;
 
 import com.frafio.myfinance.MainActivity;
 import com.frafio.myfinance.R;
+import com.frafio.myfinance.objects.Purchase;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.time.LocalDate;
 import java.util.Calendar;
@@ -25,7 +34,7 @@ import java.util.TimeZone;
 
 public class AddFragment extends Fragment {
 
-    EditText mNameET, mAmounthET;
+    EditText mNameET, mPriceET;
     ConstraintLayout mDateBtn;
     TextView mDateET;
     MaterialButton mTypeBtn, mAddBtn;
@@ -39,7 +48,7 @@ public class AddFragment extends Fragment {
 
         // collegamento view
         mNameET = view.findViewById(R.id.add_name_EditText);
-        mAmounthET = view.findViewById(R.id.add_amounth_EditText);
+        mPriceET = view.findViewById(R.id.add_price_EditText);
         mDateBtn = view.findViewById(R.id.add_dateLayout);
         mDateET = view.findViewById(R.id.add_dateTextView);
         mTypeBtn = view.findViewById(R.id.add_typeButton);
@@ -61,6 +70,13 @@ public class AddFragment extends Fragment {
                         mTypeBtn.setText("Generico");
                         break;
                 }
+            }
+        });
+
+        mAddBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addPurchase();
             }
         });
         return view;
@@ -131,5 +147,42 @@ public class AddFragment extends Fragment {
                 }
             });
         }
+    }
+
+    private void addPurchase() {
+        String name = mNameET.getText().toString().trim();
+        String type = mTypeBtn.getText().toString().trim();
+        String priceString = mPriceET.getText().toString().trim();
+
+        // controlla le info aggiunte
+
+        if (TextUtils.isEmpty(name)) {
+            mNameET.setError("Inserisci il nome dell'acquisto.");
+            return;
+        }
+
+        if (TextUtils.isEmpty(priceString)) {
+            mPriceET.setError("Inserisci il costo dell'acquisto.");
+            return;
+        }
+        double price = Double.parseDouble(priceString);
+
+        Purchase purchase = new Purchase(name, type, price, year, month, day);
+
+        FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+        fStore.collection("purchases").add(purchase)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                getActivity().onBackPressed();
+                ((MainActivity)getActivity()).showSnackbar("Acquisto aggiunto!");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                ((MainActivity)getActivity()).showSnackbar("Acquisto non aggiunto!");
+            }
+        });
     }
 }
