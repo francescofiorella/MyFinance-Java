@@ -26,79 +26,39 @@
                 app:title="@string/app_name"
                 app:titleTextColor="@color/white"
                 app:titleTextAppearance="@style/TextAppearance.MyFinance.Toolbar.Title"
+                android:theme="@style/ThemeOverlay.MyFinance.Toolbar"
                 style="@style/Widget.MaterialComponents.Toolbar.Primary"/>
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <ScrollView
+        <FrameLayout
+            android:id="@+id/main_frameLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true"
-            android:layout_below="@id/main_appBarLayout">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/main_username_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:fontFamily="@font/nunito_semibold"
-                    android:text="Username"
-                    android:textColor="@color/primary_text"
-                    android:textSize="20sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/main_email_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:fontFamily="@font/nunito"
-                    android:text="user@email.com"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/main_username_tv" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/loginBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/accent"
-                    android:text="Log In"
-                    android:textColor="@color/white"
-                    app:cornerRadius="@dimen/field_corner_radius"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </ScrollView>
+            android:layout_marginBottom="56dp"
+            android:layout_below="@id/main_appBarLayout"/>
 
     </RelativeLayout>
 
     <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/bottomAppBar"
+        android:id="@+id/main_bottomAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         style="@style/Widget.MaterialComponents.BottomAppBar.Colored">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/main_bottomNavView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginEnd="16dp"
             android:background="@android:color/transparent"
             android:outlineAmbientShadowColor="@android:color/transparent"
             android:outlineSpotShadowColor="@android:color/transparent"
-            app:menu="@menu/bottom_app_bar_menu"
-            android:layout_marginEnd="16dp" />
+            android:theme="@style/Widget.MyFinance.BottomNavigationView"
+            app:itemTextColor="@color/nav_item_color"
+            app:itemIconTint="@color/nav_item_color"
+            app:menu="@menu/bottom_app_bar_menu" />
 
     </com.google.android.material.bottomappbar.BottomAppBar>
 
@@ -109,6 +69,6 @@
         app:tint="@color/white"
         app:backgroundTint="@color/accent"
         app:srcCompat="@drawable/ic_add"
-        app:layout_anchor="@id/bottomAppBar" />
+        app:layout_anchor="@id/main_bottomAppBar" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

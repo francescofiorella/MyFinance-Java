@@ -22,6 +22,7 @@
             app:title="Registrati"
             app:titleTextColor="@color/white"
             app:titleTextAppearance="@style/TextAppearance.MyFinance.Toolbar.Title"
+            android:theme="@style/ThemeOverlay.MyFinance.Toolbar"
             style="@style/Widget.MaterialComponents.Toolbar.Primary"/>
 
     </com.google.android.material.appbar.AppBarLayout>

@@ -21,4 +21,6 @@
     <color name="primary_text">@color/black</color>
     <color name="inverted_primary_text">@color/white</color>
     <color name="snackbar">#101D25</color>
+
+    <color name="nav_items">#3278F2</color>
 </resources>

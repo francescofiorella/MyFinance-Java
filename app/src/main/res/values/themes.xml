@@ -20,7 +20,15 @@
     </style>
 
     <!--Toolbar theme. -->
+    <style name="ThemeOverlay.MyFinance.Toolbar" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorControlNormal">@color/white</item>
+    </style>
     <style name="TextAppearance.MyFinance.Toolbar.Title" parent="TextAppearance.AppCompat.Large">
+        <item name="fontFamily">@font/nunito</item>
+    </style>
+
+    <!--BottomNavigationView theme. -->
+    <style name="Widget.MyFinance.BottomNavigationView" parent="Widget.Design.BottomNavigationView">
         <item name="fontFamily">@font/nunito</item>
     </style>
 
