@@ -3,8 +3,6 @@ package com.frafio.myfinance;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
@@ -14,9 +12,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.frafio.myfinance.objects.User;
@@ -45,9 +41,6 @@ public class MainActivity extends AppCompatActivity {
     MaterialButton mLoginBtn;
     FloatingActionButton mAddBtn;
 
-    RelativeLayout mListLayout, mProfileLayout;
-    AppCompatImageView mList, mProfile;
-
     FirebaseAuth fAuth;
 
     @Override
@@ -68,20 +61,7 @@ public class MainActivity extends AppCompatActivity {
         mLoginBtn = findViewById(R.id.loginBtn);
         mAddBtn = findViewById(R.id.main_addBtn);
 
-        mListLayout = findViewById(R.id.listLayout);
-        mProfileLayout = findViewById(R.id.profileLayout);
-        mList = findViewById(R.id.listImageView);
-        mProfile = findViewById(R.id.profileImageView);
-
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                return true;
-            }
-        });
-
         updateCurrentUser();
-        setBottomBar();
     }
 
     private void updateCurrentUser() {
@@ -132,24 +112,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-    }
-
-    private void setBottomBar() {
-        mListLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mList.setSelected(true);
-                mProfile.setSelected(false);
-            }
-        });
-
-        mProfileLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mList.setSelected(false);
-                mProfile.setSelected(true);
-            }
-        });
     }
 
     @Override
