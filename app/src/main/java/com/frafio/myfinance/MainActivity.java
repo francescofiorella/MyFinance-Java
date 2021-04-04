@@ -45,12 +45,13 @@ public class MainActivity extends AppCompatActivity {
     Typeface nunito;
 
     MaterialToolbar mToolbar;
+    TextView mFragmentTitle;
     BottomNavigationView mBottomNavigationView;
     FloatingActionButton mAddBtn;
 
     FirebaseAuth fAuth;
 
-    // 0 home, 1 list, 2 profile, 3 settings
+    // 1 home, 2 list, 3 profile, 4 settings
     int currentFragment;
 
     @Override
@@ -66,13 +67,12 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
 
         // collegamento view
+        mFragmentTitle = findViewById(R.id.main_fragmentTitle);
         mBottomNavigationView = findViewById(R.id.main_bottomNavView);
         mAddBtn = findViewById(R.id.main_addBtn);
 
         if (savedInstanceState == null) {
-            mToolbar.setTitle("MyFinance");
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_frameLayout, new HomeFragment()).commit();
-            currentFragment = 0;
+            setFragment(1);
         }
 
         updateCurrentUser();
@@ -80,44 +80,50 @@ public class MainActivity extends AppCompatActivity {
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment mFragmentToSet = null;
                 switch (item.getItemId()) {
                     case R.id.home:
-                        if (currentFragment != 0) {
-                            mToolbar.setTitle("MyFinance");
-                            mFragmentToSet = new HomeFragment();
-                            currentFragment = 0;
-                        }
+                        setFragment(1);
                         break;
                     case R.id.list:
-                        if (currentFragment != 1) {
-                            mToolbar.setTitle("Lista");
-                            mFragmentToSet = new ListFragment();
-                            currentFragment = 1;
-                        }
+                        setFragment(2);
                         break;
                     case R.id.profile:
-                        if (currentFragment != 2) {
-                            mToolbar.setTitle("Profilo");
-                            mFragmentToSet = new ProfileFragment();
-                            currentFragment = 2;
-                        }
+                        setFragment(3);
                         break;
                     case R.id.settings:
-                        if (currentFragment != 3) {
-                            mToolbar.setTitle("Impostazioni");
-                            mFragmentToSet = new SettingsFragment();
-                            currentFragment = 3;
-                        }
+                        setFragment(4);
                         break;
-                }
-                if (mFragmentToSet != null) {
-                    getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                            .replace(R.id.main_frameLayout, mFragmentToSet).commit();
                 }
                 return true;
             }
         });
+    }
+
+    private void setFragment(int num) {
+        if (currentFragment != num) {
+            Fragment mFragmentToSet = null;
+            switch (num) {
+                case 1:
+                    mFragmentTitle.setText("Dashboard");
+                    mFragmentToSet = new HomeFragment();
+                    break;
+                case 2:
+                    mFragmentTitle.setText("Lista");
+                    mFragmentToSet = new ListFragment();
+                    break;
+                case 3:
+                    mFragmentTitle.setText("Profilo");
+                    mFragmentToSet = new ProfileFragment();
+                    break;
+                case 4:
+                    mFragmentTitle.setText("Impostazioni");
+                    mFragmentToSet = new SettingsFragment();
+                    break;
+            }
+            getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .replace(R.id.main_frameLayout, mFragmentToSet).commit();
+            currentFragment = num;
+        }
     }
 
     private void updateCurrentUser() {
@@ -156,11 +162,22 @@ public class MainActivity extends AppCompatActivity {
             boolean userRequest = data.getBooleanExtra("com.frafio.myfinance.userRequest", false);
             if (userRequest) {
                 updateCurrentUser();
-                mToolbar.setTitle("Profilo");
+                mFragmentTitle.setText("Profilo");
+                mBottomNavigationView.setSelectedItemId(R.id.profile);
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_frameLayout, new ProfileFragment()).commit();
                 currentFragment = 2;
                 showSnackbar("Hai effettuato l'accesso come " + fAuth.getCurrentUser().getDisplayName());
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (currentFragment != 1) {
+            setFragment(1);
+            mBottomNavigationView.setSelectedItemId(R.id.home);
+        } else {
+            super.onBackPressed();
         }
     }
 

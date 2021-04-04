@@ -25,18 +25,35 @@
                 android:background="?attr/colorPrimary"
                 app:title="@string/app_name"
                 app:titleTextColor="@color/white"
-                app:titleTextAppearance="@style/TextAppearance.MyFinance.Toolbar.Title"
+                app:titleTextAppearance="@style/TextAppearance.MyFinance.Toolbar.MainTitle"
                 android:theme="@style/ThemeOverlay.MyFinance.Toolbar"
                 style="@style/Widget.MaterialComponents.Toolbar.Primary"/>
 
         </com.google.android.material.appbar.AppBarLayout>
+
+        <TextView
+            android:id="@+id/main_fragmentTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dashboard"
+            android:fontFamily="@font/nunito"
+            android:textSize="21sp"
+            android:padding="10dp"
+            android:layout_below="@id/main_appBarLayout"/>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:layout_below="@id/main_fragmentTitle"
+            android:background="@android:color/darker_gray" />
 
         <FrameLayout
             android:id="@+id/main_frameLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="56dp"
-            android:layout_below="@id/main_appBarLayout"/>
+            android:layout_below="@id/divider"/>
 
     </RelativeLayout>
 
@@ -58,6 +75,7 @@
             android:theme="@style/Widget.MyFinance.BottomNavigationView"
             app:itemTextColor="@color/nav_item_color"
             app:itemIconTint="@color/nav_item_color"
+            app:itemBackground="@android:color/transparent"
             app:menu="@menu/bottom_app_bar_menu" />
 
     </com.google.android.material.bottomappbar.BottomAppBar>

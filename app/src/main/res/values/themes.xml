@@ -23,6 +23,10 @@
     <style name="ThemeOverlay.MyFinance.Toolbar" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <item name="colorControlNormal">@color/white</item>
     </style>
+    <style name="TextAppearance.MyFinance.Toolbar.MainTitle" parent="TextAppearance.AppCompat.Large">
+        <item name="fontFamily">casual</item>
+        <item name="android:textSize">26sp</item>
+    </style>
     <style name="TextAppearance.MyFinance.Toolbar.Title" parent="TextAppearance.AppCompat.Large">
         <item name="fontFamily">@font/nunito</item>
     </style>
