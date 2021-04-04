@@ -51,4 +51,15 @@
         <item name="autoCompleteTextViewStyle">@style/Widget.MaterialComponents.AutoCompleteTextView.OutlinedBox</item>
     </style>
 
+    <!--Material DatePicker theme. -->
+    <style name="ThemeOverlay.MyFinance.DatePicker" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.MyFinance.DatePicker.Button</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.MyFinance.DatePicker.Button</item>
+    </style>
+    <style name="Widget.MyFinance.DatePicker.Button" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/accent</item>
+        <item name="fontFamily">@font/nunito_bold</item>
+    </style>
+
 </resources>

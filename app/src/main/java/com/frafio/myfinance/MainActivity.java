@@ -16,8 +16,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
 import android.widget.TextView;
 
+import com.frafio.myfinance.fragments.AddFragment;
 import com.frafio.myfinance.fragments.HomeFragment;
 import com.frafio.myfinance.fragments.ListFragment;
 import com.frafio.myfinance.fragments.ProfileFragment;
@@ -51,8 +53,10 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseAuth fAuth;
 
-    // 1 home, 2 list, 3 profile, 4 settings
+    // 1 home, 2 list, 3 profile, 4 settings, 5 add
     int currentFragment;
+
+    OvershootInterpolator interpolator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +101,20 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        mAddBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentFragment == 5) {
+                    setFragment(1);
+                    mBottomNavigationView.setSelectedItemId(R.id.home);
+                } else {
+                    setFragment(5);
+                    mBottomNavigationView.setSelectedItemId(R.id.placeholder);
+                    mAddBtn.animate().setInterpolator(interpolator).rotation(45f).setDuration(150).start();
+                }
+            }
+        });
     }
 
     private void setFragment(int num) {
@@ -119,6 +137,13 @@ public class MainActivity extends AppCompatActivity {
                     mFragmentTitle.setText("Impostazioni");
                     mFragmentToSet = new SettingsFragment();
                     break;
+                case 5:
+                    mFragmentTitle.setText("Acquisto");
+                    mFragmentToSet = new AddFragment();
+                    break;
+            }
+            if (currentFragment == 5) {
+                mAddBtn.animate().setInterpolator(interpolator).rotation(0f).setDuration(150).start();
             }
             getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .replace(R.id.main_frameLayout, mFragmentToSet).commit();
@@ -162,6 +187,9 @@ public class MainActivity extends AppCompatActivity {
             boolean userRequest = data.getBooleanExtra("com.frafio.myfinance.userRequest", false);
             if (userRequest) {
                 updateCurrentUser();
+                if (currentFragment == 5) {
+                    mAddBtn.animate().setInterpolator(interpolator).rotation(0f).setDuration(150).start();
+                }
                 mFragmentTitle.setText("Profilo");
                 mBottomNavigationView.setSelectedItemId(R.id.profile);
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_frameLayout, new ProfileFragment()).commit();
