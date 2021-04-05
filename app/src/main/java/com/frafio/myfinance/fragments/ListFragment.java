@@ -1,6 +1,7 @@
 package com.frafio.myfinance.fragments;
 
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,23 +57,26 @@ public class ListFragment extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull ListFragment.PurchaseViewHolder holder, int position, @NonNull Purchase model) {
-                holder.rNomeTV.setText(model.getName());
-                holder.rCostoTV.setText("€" + Double.toString(model.getPrice()));
-                String dayString, monthString;
-                if (model.getDay() < 10) {
-                    dayString = "0" + model.getDay();
-                } else {
-                    dayString = model.getDay() + "";
-                }
-                if (model.getMonth() < 10) {
-                    monthString = "0" + model.getMonth();
-                } else {
-                    monthString = model.getMonth() + "";
-                }
-                holder.rDataTV.setText(dayString + "/" + monthString + "/" + model.getYear());
+                holder.rCostoTV.setText("€" + model.getPrice());
 
                 if (model.getName().equals("Totale")) {
-                    holder.rDivider.setVisibility(View.VISIBLE);
+                    holder.rNomeTV.setText(model.getName());
+                    holder.rNomeTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                    holder.rDateLayout.setVisibility(View.VISIBLE);
+                    String dayString, monthString;
+                    if (model.getDay() < 10) {
+                        dayString = "0" + model.getDay();
+                    } else {
+                        dayString = model.getDay() + "";
+                    }
+                    if (model.getMonth() < 10) {
+                        monthString = "0" + model.getMonth();
+                    } else {
+                        monthString = model.getMonth() + "";
+                    }
+                    holder.rDataTV.setText(dayString + "/" + monthString + "/" + model.getYear());
+                } else {
+                    holder.rNomeTV.setText("   " + model.getName());
                 }
             }
         };
@@ -85,14 +89,13 @@ public class ListFragment extends Fragment {
 
     private class PurchaseViewHolder extends RecyclerView.ViewHolder{
 
-        ConstraintLayout rItemLayout;
-        View rDivider;
+        ConstraintLayout rItemLayout, rDateLayout;
         TextView rNomeTV, rCostoTV, rDataTV;
 
         public PurchaseViewHolder(@NonNull View itemView) {
             super(itemView);
             rItemLayout = itemView.findViewById(R.id.recView_purchaseItem_constraintLayout);
-            rDivider = itemView.findViewById(R.id.recView_purchaseItem_divider);
+            rDateLayout = itemView.findViewById(R.id.recView_purchaseItem_dateLayout);
             rNomeTV = itemView.findViewById(R.id.recView_purchaseItem_nomeTextView);
             rCostoTV = itemView.findViewById(R.id.recView_purchaseItem_costoTextView);
             rDataTV = itemView.findViewById(R.id.recView_purchaseItem_dataTextView);

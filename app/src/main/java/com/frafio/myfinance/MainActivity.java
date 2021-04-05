@@ -184,6 +184,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void goToList() {
+        mBottomNavigationView.setSelectedItemId(R.id.list);
+    }
+
     private void updateCurrentUser() {
         fAuth = FirebaseAuth.getInstance();
         FirebaseUser fUser = fAuth.getCurrentUser();

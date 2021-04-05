@@ -161,13 +161,18 @@ public class AddFragment extends Fragment {
             return;
         }
 
+        if (name.equals("Totale")) {
+            mNameET.setError("L'acquisto non può chiamarsi 'Totale'.");
+            return;
+        }
+
         if (TextUtils.isEmpty(priceString)) {
             mPriceET.setError("Inserisci il costo dell'acquisto.");
             return;
         }
         double price = Double.parseDouble(priceString);
 
-        Purchase purchase = new Purchase(name, type, price, year, month, day, 1);
+        Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, type, price, year, month, day, 1);
 
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
         fStore.collection("purchases").add(purchase)
@@ -175,22 +180,26 @@ public class AddFragment extends Fragment {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 MainActivity.PURCHASELIST.add(purchase);
-                int sum = 0;
+                double sum = 0;
                 for (Purchase item : MainActivity.PURCHASELIST) {
-                    if (item.getYear() == year && item.getMonth() == month && item.getDay() == day && item.getNum() == 1) {
-                        sum += item.getPrice();
+                    if (!item.getType().equals("Biglietto")) {
+                        if (item.getEmail().equals(MainActivity.CURRENTUSER.getEmail()) && item.getYear() == year
+                                && item.getMonth() == month && item.getDay() == day && item.getNum() == 1) {
+                            sum += item.getPrice();
+                        }
                     }
                 }
-                Purchase totalP = new Purchase("Totale", "Generico", sum, year, month, day, 0);
+                Purchase totalP = new Purchase(MainActivity.CURRENTUSER.getEmail(), "Totale", "Generico", sum, year, month, day, 0);
                 FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-                fStore.collection("purchases").add(totalP)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        getActivity().onBackPressed();
-                        ((MainActivity)getActivity()).showSnackbar("Acquisto aggiunto!");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
+                String totID = year + "" + month + ""+ day;
+                fStore.collection("purchases").document(totID).set(totalP)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                ((MainActivity)getActivity()).showSnackbar("Acquisto aggiunto!");
+                                ((MainActivity)getActivity()).goToList();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e("LOG", "Error! " + e.getLocalizedMessage());
