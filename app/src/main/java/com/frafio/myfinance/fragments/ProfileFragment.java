@@ -34,8 +34,6 @@ public class ProfileFragment extends Fragment {
     ImageView mUserImage;
     TextView mUserNameTv, mEmailTv;
 
-    FirebaseAuth fAuth;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -52,36 +50,10 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setUserData() {
-        fAuth = FirebaseAuth.getInstance();
-        FirebaseUser fUser = fAuth.getCurrentUser();
-
-        if (fUser != null) {
-            if (MainActivity.CURRENTUSER == null) {
-                FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-                fStore.collection("users").document(fUser.getUid()).get()
-                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                MainActivity.CURRENTUSER = documentSnapshot.toObject(User.class);
-                                mUserNameTv.setText(MainActivity.CURRENTUSER.getFullName());
-                                mEmailTv.setText(MainActivity.CURRENTUSER.getEmail());
-                                if (!MainActivity.CURRENTUSER.getImage().equals("")) {
-                                    Glide.with(getContext()).load(MainActivity.CURRENTUSER.getImage()).apply(RequestOptions.circleCropTransform()).into(mUserImage);
-                                }
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("LOG", "Error! " + e.getLocalizedMessage());
-                    }
-                });
-            } else {
-                mUserNameTv.setText(MainActivity.CURRENTUSER.getFullName());
-                mEmailTv.setText(MainActivity.CURRENTUSER.getEmail());
-                if (!MainActivity.CURRENTUSER.getImage().equals("")) {
-                    Glide.with(getContext()).load(MainActivity.CURRENTUSER.getImage()).apply(RequestOptions.circleCropTransform()).into(mUserImage);
-                }
-            }
+        mUserNameTv.setText(MainActivity.CURRENTUSER.getFullName());
+        mEmailTv.setText(MainActivity.CURRENTUSER.getEmail());
+        if (!MainActivity.CURRENTUSER.getImage().equals("")) {
+            Glide.with(getContext()).load(MainActivity.CURRENTUSER.getImage()).apply(RequestOptions.circleCropTransform()).into(mUserImage);
         }
     }
 }

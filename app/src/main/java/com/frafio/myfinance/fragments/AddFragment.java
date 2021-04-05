@@ -167,15 +167,36 @@ public class AddFragment extends Fragment {
         }
         double price = Double.parseDouble(priceString);
 
-        Purchase purchase = new Purchase(name, type, price, year, month, day);
+        Purchase purchase = new Purchase(name, type, price, year, month, day, 1);
 
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
         fStore.collection("purchases").add(purchase)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
-                getActivity().onBackPressed();
-                ((MainActivity)getActivity()).showSnackbar("Acquisto aggiunto!");
+                MainActivity.PURCHASELIST.add(purchase);
+                int sum = 0;
+                for (Purchase item : MainActivity.PURCHASELIST) {
+                    if (item.getYear() == year && item.getMonth() == month && item.getDay() == day && item.getNum() == 1) {
+                        sum += item.getPrice();
+                    }
+                }
+                Purchase totalP = new Purchase("Totale", "Generico", sum, year, month, day, 0);
+                FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+                fStore.collection("purchases").add(totalP)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        getActivity().onBackPressed();
+                        ((MainActivity)getActivity()).showSnackbar("Acquisto aggiunto!");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                        ((MainActivity)getActivity()).showSnackbar("Acquisto non aggiunto correttamente!");
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

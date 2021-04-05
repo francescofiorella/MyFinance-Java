@@ -21,6 +21,7 @@ import com.frafio.myfinance.fragments.DashboardFragment;
 import com.frafio.myfinance.fragments.ListFragment;
 import com.frafio.myfinance.fragments.ProfileFragment;
 import com.frafio.myfinance.fragments.MenuFragment;
+import com.frafio.myfinance.objects.Purchase;
 import com.frafio.myfinance.objects.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,11 +34,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     // definizione variabili
     static public User CURRENTUSER;
+    static public List<Purchase> PURCHASELIST;
 
     CoordinatorLayout layout;
     Typeface nunito;
@@ -190,6 +196,24 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         CURRENTUSER = documentSnapshot.toObject(User.class);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                    }
+                });
+            }
+            if (PURCHASELIST == null) {
+                PURCHASELIST = new LinkedList<>();
+                FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+                fStore.collection("purchases").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot document : queryDocumentSnapshots) {
+                            Purchase purchase = document.toObject(Purchase.class);
+                            PURCHASELIST.add(purchase);
+                        }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

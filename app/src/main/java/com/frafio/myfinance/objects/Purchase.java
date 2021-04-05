@@ -5,16 +5,17 @@ public class Purchase {
     // definizione campi
     public String name, type;
     public double price;
-    public int year, month, day;
+    public int year, month, day, num;
 
     // costruttore nuovo utente
-    public Purchase(String name, String type, double price, int year, int month, int day){
+    public Purchase(String name, String type, double price, int year, int month, int day, int num){
         this.name = name;
         this.type = type;
         this.price = price;
         this.year = year;
         this.month = month;
         this.day = day;
+        this.num = num;
     }
 
     // costruttore vuoto utile per FireBase
@@ -67,5 +68,13 @@ public class Purchase {
 
     public void setDay(int day) {
         this.day = day;
+    }
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
     }
 }

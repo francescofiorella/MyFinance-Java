@@ -1,6 +1,5 @@
 package com.frafio.myfinance.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.frafio.myfinance.MainActivity;
 import com.frafio.myfinance.R;
 import com.frafio.myfinance.objects.Purchase;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -43,7 +41,7 @@ public class ListFragment extends Fragment {
         // query
         Query query = fStore.collection("purchases").orderBy("year", Query.Direction.DESCENDING)
                 .orderBy("month", Query.Direction.DESCENDING).orderBy("day", Query.Direction.DESCENDING)
-                .orderBy("name");
+                .orderBy("num").orderBy("name");
 
         // recyclerOptions
         FirestoreRecyclerOptions<Purchase> options = new FirestoreRecyclerOptions.Builder<Purchase>().setQuery(query, Purchase.class).build();
@@ -72,6 +70,10 @@ public class ListFragment extends Fragment {
                     monthString = model.getMonth() + "";
                 }
                 holder.rDataTV.setText(dayString + "/" + monthString + "/" + model.getYear());
+
+                if (model.getName().equals("Totale")) {
+                    holder.rDivider.setVisibility(View.VISIBLE);
+                }
             }
         };
 
@@ -83,12 +85,14 @@ public class ListFragment extends Fragment {
 
     private class PurchaseViewHolder extends RecyclerView.ViewHolder{
 
+        ConstraintLayout rItemLayout;
+        View rDivider;
         TextView rNomeTV, rCostoTV, rDataTV;
-        ConstraintLayout itemLayout;
 
         public PurchaseViewHolder(@NonNull View itemView) {
             super(itemView);
-            itemLayout = itemView.findViewById(R.id.recView_purchaseItem_constraintLayout);
+            rItemLayout = itemView.findViewById(R.id.recView_purchaseItem_constraintLayout);
+            rDivider = itemView.findViewById(R.id.recView_purchaseItem_divider);
             rNomeTV = itemView.findViewById(R.id.recView_purchaseItem_nomeTextView);
             rCostoTV = itemView.findViewById(R.id.recView_purchaseItem_costoTextView);
             rDataTV = itemView.findViewById(R.id.recView_purchaseItem_dataTextView);

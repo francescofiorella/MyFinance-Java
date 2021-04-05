@@ -5,16 +5,26 @@
     android:id="@+id/recView_purchaseItem_constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingVertical="10dp"
     android:paddingHorizontal="20dp"
     android:clickable="true"
     android:focusable="true"
     android:background="?attr/selectableItemBackground">
 
+    <View
+        android:id="@+id/recView_purchaseItem_divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@android:color/darker_gray"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <TextView
         android:id="@+id/recView_purchaseItem_nomeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:fontFamily="@font/nunito_semibold"
         android:text="Acquisto"
         android:textSize="20sp"
@@ -37,9 +47,11 @@
         android:id="@+id/recView_purchaseItem_dataTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:fontFamily="@font/nunito"
         android:text="Data"
         android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/recView_purchaseItem_nomeTextView"
         app:layout_constraintTop_toBottomOf="@+id/recView_purchaseItem_nomeTextView" />
 
