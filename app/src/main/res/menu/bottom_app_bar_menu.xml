@@ -27,9 +27,9 @@
         android:contentDescription="Profile" />
 
     <item
-        android:id="@+id/settings"
-        android:icon="@drawable/ic_settings"
-        android:title="Impostazioni"
-        android:contentDescription="Settings" />
+        android:id="@+id/menu"
+        android:icon="@drawable/ic_menu"
+        android:title="Menu"
+        android:contentDescription="Menu" />
 
 </menu>

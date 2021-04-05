@@ -39,6 +39,7 @@
             android:fontFamily="@font/nunito"
             android:textSize="21sp"
             android:padding="10dp"
+            android:textColor="@color/primary_text"
             android:layout_below="@id/main_appBarLayout"/>
 
         <View
@@ -46,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.1dp"
             android:layout_below="@id/main_fragmentTitle"
-            android:background="@android:color/darker_gray" />
+            android:background="@color/primary_text" />
 
         <FrameLayout
             android:id="@+id/main_frameLayout"

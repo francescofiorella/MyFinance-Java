@@ -69,16 +69,19 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        fAuth = FirebaseAuth.getInstance();
+        if (fAuth.getCurrentUser() != null) {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         nunito = ResourcesCompat.getFont(getApplicationContext(), R.font.nunito);
         layout = findViewById(R.id.login_layout);
 
         // toolbar
         mToolbar = findViewById(R.id.login_toolbar);
         setSupportActionBar(mToolbar);
-
-        // back arrow
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // collegamento view
         mEmail = findViewById(R.id.login_nameInputText);
@@ -92,8 +95,6 @@ public class LoginActivity extends AppCompatActivity {
         mGoogleBtn = findViewById(R.id.googleButton);
         mProgressIndicator = findViewById(R.id.login_progressIindicator);
         mSignupBtn = findViewById(R.id.lRegisterTextView);
-
-        fAuth = FirebaseAuth.getInstance();
 
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,9 +130,9 @@ public class LoginActivity extends AppCompatActivity {
                 fAuth.signInWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        Intent returnIntent = new Intent();
-                        returnIntent.putExtra("com.frafio.myfinance.userRequest", true);
-                        setResult(Activity.RESULT_OK, returnIntent);
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.putExtra("com.frafio.myfinance.userRequest", true);
+                        startActivity(intent);
                         finish();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -263,9 +264,9 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Void aVoid) {
                             MainActivity.CURRENTUSER = user;
-                            Intent returnIntent = new Intent();
-                            returnIntent.putExtra("com.frafio.myfinance.userRequest", true);
-                            setResult(Activity.RESULT_OK, returnIntent);
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            intent.putExtra("com.frafio.myfinance.userRequest", true);
+                            startActivity(intent);
                             finish();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -278,9 +279,9 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra("com.frafio.myfinance.userRequest", true);
-                    setResult(Activity.RESULT_OK, returnIntent);
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.putExtra("com.frafio.myfinance.userRequest", true);
+                    startActivity(intent);
                     finish();
                 }
             }
@@ -313,18 +314,16 @@ public class LoginActivity extends AppCompatActivity {
                 mProgressIndicator.hide();
             }
         } else if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-            Intent returnIntent = new Intent();
-            returnIntent.putExtra("com.frafio.myfinance.userRequest", true);
-            setResult(Activity.RESULT_OK, returnIntent);
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.putExtra("com.frafio.myfinance.userRequest", true);
+            startActivity(intent);
             finish();
         }
     }
 
-    // ends this activity (back arrow)
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        this.finish();
-        return super.onOptionsItemSelected(item);
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     private void showSnackbar(String string) {

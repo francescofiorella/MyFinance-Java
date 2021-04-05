@@ -1,7 +1,6 @@
 package com.frafio.myfinance;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
@@ -9,8 +8,6 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +20,7 @@ import com.frafio.myfinance.fragments.AddFragment;
 import com.frafio.myfinance.fragments.DashboardFragment;
 import com.frafio.myfinance.fragments.ListFragment;
 import com.frafio.myfinance.fragments.ProfileFragment;
-import com.frafio.myfinance.fragments.SettingsFragment;
+import com.frafio.myfinance.fragments.MenuFragment;
 import com.frafio.myfinance.objects.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -54,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     // 1 home, 2 list, 3 profile, 4 settings, 5 add
     int currentFragment;
+    int previousFragment;
 
     OvershootInterpolator interpolator;
 
@@ -74,8 +72,18 @@ public class MainActivity extends AppCompatActivity {
         mBottomNavigationView = findViewById(R.id.main_bottomNavView);
         mAddBtn = findViewById(R.id.main_addBtn);
 
+        previousFragment = 0;
+
         if (savedInstanceState == null) {
             setFragment(1);
+        }
+
+        fAuth = FirebaseAuth.getInstance();
+        if (getIntent().hasExtra("com.frafio.myfinance.userRequest")){
+            boolean userRequest = getIntent().getExtras().getBoolean("com.frafio.myfinance.userRequest", false);
+            if (userRequest) {
+                showSnackbar("Hai effettuato l'accesso come " + fAuth.getCurrentUser().getDisplayName());
+            }
         }
 
         updateCurrentUser();
@@ -93,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.profile:
                         setFragment(3);
                         break;
-                    case R.id.settings:
+                    case R.id.menu:
                         setFragment(4);
                         break;
                 }
@@ -105,8 +113,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (currentFragment == 5) {
-                    setFragment(1);
-                    mBottomNavigationView.setSelectedItemId(R.id.dashboard);
+                    goToPreviousFragment();
                 } else {
                     setFragment(5);
                     mBottomNavigationView.setSelectedItemId(R.id.placeholder);
@@ -117,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void setFragment(int num) {
         if (currentFragment != num) {
+            previousFragment = currentFragment;
             Fragment mFragmentToSet = null;
             switch (num) {
                 case 1:
@@ -124,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                     mFragmentToSet = new DashboardFragment();
                     break;
                 case 2:
-                    mFragmentTitle.setText("Lista");
+                    mFragmentTitle.setText("Lista acquisti");
                     mFragmentToSet = new ListFragment();
                     break;
                 case 3:
@@ -132,8 +140,8 @@ public class MainActivity extends AppCompatActivity {
                     mFragmentToSet = new ProfileFragment();
                     break;
                 case 4:
-                    mFragmentTitle.setText("Impostazioni");
-                    mFragmentToSet = new SettingsFragment();
+                    mFragmentTitle.setText("Menu");
+                    mFragmentToSet = new MenuFragment();
                     break;
                 case 5:
                     mFragmentTitle.setText("Acquisto");
@@ -147,6 +155,26 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .replace(R.id.main_frameLayout, mFragmentToSet).commit();
             currentFragment = num;
+        }
+    }
+
+    public void goToPreviousFragment() {
+        switch (previousFragment) {
+            case 1:
+                mBottomNavigationView.setSelectedItemId(R.id.dashboard);
+                break;
+            case 2:
+                mBottomNavigationView.setSelectedItemId(R.id.list);
+                break;
+            case 3:
+                mBottomNavigationView.setSelectedItemId(R.id.profile);
+                break;
+            case 4:
+                mBottomNavigationView.setSelectedItemId(R.id.menu);
+                break;
+            case 5:
+                mBottomNavigationView.setSelectedItemId(R.id.placeholder);
+                break;
         }
     }
 
@@ -170,38 +198,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
-        } else {
-            CURRENTUSER = null;
-        }
-    }
-
-    public void goToLogin() {
-        startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), 1);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-            boolean userRequest = data.getBooleanExtra("com.frafio.myfinance.userRequest", false);
-            if (userRequest) {
-                updateCurrentUser();
-                if (currentFragment == 5) {
-                    mAddBtn.animate().setInterpolator(interpolator).rotation(0f).setDuration(150).start();
-                }
-                mFragmentTitle.setText("Profilo");
-                mBottomNavigationView.setSelectedItemId(R.id.profile);
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frameLayout, new ProfileFragment()).commit();
-                currentFragment = 2;
-                showSnackbar("Hai effettuato l'accesso come " + fAuth.getCurrentUser().getDisplayName());
-            }
         }
     }
 
     @Override
     public void onBackPressed() {
-        if (currentFragment != 1) {
-            setFragment(1);
+        if (currentFragment == 5) {
+            goToPreviousFragment();
+        } else if (currentFragment != 1) {
             mBottomNavigationView.setSelectedItemId(R.id.dashboard);
         } else {
             super.onBackPressed();

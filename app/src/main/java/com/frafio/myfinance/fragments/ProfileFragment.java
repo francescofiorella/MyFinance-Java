@@ -33,7 +33,6 @@ public class ProfileFragment extends Fragment {
 
     ImageView mUserImage;
     TextView mUserNameTv, mEmailTv;
-    MaterialButton mLoginBtn;
 
     FirebaseAuth fAuth;
 
@@ -46,7 +45,6 @@ public class ProfileFragment extends Fragment {
         mUserImage = view.findViewById(R.id.profile_propic_iv);
         mUserNameTv = view.findViewById(R.id.profile_username_tv);
         mEmailTv = view.findViewById(R.id.profile_email_tv);
-        mLoginBtn = view.findViewById(R.id.profile_loginBtn);
 
         setUserData();
 
@@ -58,7 +56,6 @@ public class ProfileFragment extends Fragment {
         FirebaseUser fUser = fAuth.getCurrentUser();
 
         if (fUser != null) {
-            mUserNameTv.setVisibility(View.VISIBLE);
             if (MainActivity.CURRENTUSER == null) {
                 FirebaseFirestore fStore = FirebaseFirestore.getInstance();
                 fStore.collection("users").document(fUser.getUid()).get()
@@ -85,27 +82,6 @@ public class ProfileFragment extends Fragment {
                     Glide.with(getContext()).load(MainActivity.CURRENTUSER.getImage()).apply(RequestOptions.circleCropTransform()).into(mUserImage);
                 }
             }
-            mLoginBtn.setText("Log Out");
-            mLoginBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    FirebaseAuth.getInstance().signOut();
-                    ((MainActivity)getActivity()).showSnackbar("Logout effettuato!");
-                    setUserData();
-                }
-            });
-        } else {
-            MainActivity.CURRENTUSER = null;
-            mUserImage.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_user));
-            mUserNameTv.setVisibility(View.GONE);
-            mEmailTv.setText("Accedi al tuo account");
-            mLoginBtn.setText("Accedi");
-            mLoginBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ((MainActivity)getActivity()).goToLogin();
-                }
-            });
         }
     }
 }
