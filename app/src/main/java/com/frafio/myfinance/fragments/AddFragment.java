@@ -335,7 +335,7 @@ public class AddFragment extends Fragment {
         }
 
         if (mTotSwitch.isChecked()) {
-            Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, "Generico", 0.0, year, month, day, 0);
+            Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, "Totale", 0.0, year, month, day, 0);
 
             FirebaseFirestore fStore = FirebaseFirestore.getInstance();
             String totID = year + "" + month + ""+ day;
