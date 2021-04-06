@@ -7,6 +7,7 @@
     <color name="error">@color/cinnamon_satin</color>
     <color name="primary_text">@color/white</color>
     <color name="inverted_primary_text">@color/black</color>
+    <color name="disabled_text">#3F4952</color>
     <color name="snackbar">#F4F4F4</color>
 
     <color name="edit_text">#191C25</color>

@@ -1,19 +1,23 @@
 package com.frafio.myfinance.fragments;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
+import android.transition.AutoTransition;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.frafio.myfinance.MainActivity;
@@ -24,6 +28,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -35,11 +40,15 @@ import java.util.TimeZone;
 public class AddFragment extends Fragment {
 
     EditText mNameET, mPriceET;
-    ConstraintLayout mDateBtn;
-    TextView mDateET;
-    MaterialButton mTypeBtn, mAddBtn;
+    ConstraintLayout mDateBtn, parent;
+    GridLayout mBigliettoLayout;
+    TextView mDateET, mGenBtn, mSpeBtn, mBigBtn, mTIBtn, mAmBtn, mAltroBtn;
+    SwitchMaterial mTotSwitch;
+    MaterialButton mAddBtn;
 
     int year, month, day;
+
+    OvershootInterpolator interpolator;
 
     @Nullable
     @Override
@@ -47,31 +56,62 @@ public class AddFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_add, container, false);
 
         // collegamento view
+        parent = view.findViewById(R.id.add_layout);
         mNameET = view.findViewById(R.id.add_name_EditText);
         mPriceET = view.findViewById(R.id.add_price_EditText);
         mDateBtn = view.findViewById(R.id.add_dateLayout);
         mDateET = view.findViewById(R.id.add_dateTextView);
-        mTypeBtn = view.findViewById(R.id.add_typeButton);
+        mTotSwitch = view.findViewById(R.id.add_totale_switch);
+        mGenBtn = view.findViewById(R.id.add_generico_tv);
+        mSpeBtn = view.findViewById(R.id.add_spesa_tv);
+        mBigBtn = view.findViewById(R.id.add_biglietto_tv);
+        mBigliettoLayout = view.findViewById(R.id.add_bigliettoLayout);
+        mTIBtn = view.findViewById(R.id.add_trenitalia_tv);
+        mAmBtn = view.findViewById(R.id.add_amtab_tv);
+        mAltroBtn = view.findViewById(R.id.add_altro_tv);
         mAddBtn = view.findViewById(R.id.add_addButton);
+
+        interpolator = new OvershootInterpolator();
+        mBigliettoLayout.setAlpha(0f);
 
         setDatePicker();
 
-        mTypeBtn.setOnClickListener(new View.OnClickListener() {
+        mTotSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                switch (mTypeBtn.getText().toString().trim()) {
-                    case "Generico":
-                        mTypeBtn.setText("Spesa");
-                        break;
-                    case "Spesa":
-                        mTypeBtn.setText("Biglietto");
-                        break;
-                    case "Biglietto":
-                        mTypeBtn.setText("Generico");
-                        break;
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mNameET.setText("Totale");
+                    mNameET.setEnabled(false);
+
+                    mPriceET.setText("€0.00");
+                    mPriceET.setEnabled(false);
+
+                    mNameET.setError(null);
+                    mPriceET.setError(null);
+
+                    mGenBtn.setEnabled(false);
+                    mSpeBtn.setEnabled(false);
+                    mBigBtn.setEnabled(false);
+
+                    closeTicketBtn();
+                } else {
+                    mNameET.setText("");
+                    mNameET.setEnabled(true);
+
+                    mPriceET.setText("");
+                    mPriceET.setEnabled(true);
+
+                    mGenBtn.setEnabled(true);
+                    mSpeBtn.setEnabled(true);
+                    mBigBtn.setEnabled(true);
+
+                    setBigliettoLayout();
                 }
             }
         });
+
+        mGenBtn.setSelected(true);
+        setTypeButton();
 
         mAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,70 +189,231 @@ public class AddFragment extends Fragment {
         }
     }
 
+    private void setTypeButton() {
+        mGenBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mGenBtn.isSelected()) {
+                    mGenBtn.setSelected(true);
+                    mSpeBtn.setSelected(false);
+                    mBigBtn.setSelected(false);
+
+                    closeTicketBtn();
+
+                    mNameET.setText("");
+                    mNameET.setEnabled(true);
+                }
+            }
+        });
+
+        mSpeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mSpeBtn.isSelected()) {
+                    mGenBtn.setSelected(false);
+                    mSpeBtn.setSelected(true);
+                    mBigBtn.setSelected(false);
+
+                    closeTicketBtn();
+
+                    mNameET.setText("");
+                    mNameET.setEnabled(true);
+                }
+            }
+        });
+
+        mBigBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mBigBtn.isSelected()) {
+                    mGenBtn.setSelected(false);
+                    mSpeBtn.setSelected(false);
+                    mBigBtn.setSelected(true);
+                    setBigliettoLayout();
+                }
+            }
+        });
+    }
+
+    private void setBigliettoLayout() {
+        if (mBigBtn.isSelected()) {
+            openTicketBtn();
+
+            mTIBtn.setSelected(true);
+            mAmBtn.setSelected(false);
+            mAltroBtn.setSelected(false);
+
+            mNameET.setText("Biglietto TrenItalia");
+            mNameET.setEnabled(false);
+
+            mTIBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!mTIBtn.isSelected()) {
+                        mTIBtn.setSelected(true);
+                        mAmBtn.setSelected(false);
+                        mAltroBtn.setSelected(false);
+
+                        mNameET.setText("Biglietto TrenItalia");
+                        mNameET.setEnabled(false);
+                    }
+                }
+            });
+
+            mAmBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!mAmBtn.isSelected()) {
+                        mTIBtn.setSelected(false);
+                        mAmBtn.setSelected(true);
+                        mAltroBtn.setSelected(false);
+
+                        mNameET.setText("Biglietto Amtab");
+                        mNameET.setEnabled(false);
+                    }
+                }
+            });
+
+            mAltroBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!mAltroBtn.isSelected()) {
+                        mTIBtn.setSelected(false);
+                        mAmBtn.setSelected(false);
+                        mAltroBtn.setSelected(true);
+
+                        mNameET.setText("");
+                        mNameET.setEnabled(true);
+                    }
+                }
+            });
+        } else {
+            closeTicketBtn();
+        }
+    }
+
+    private void openTicketBtn() {
+        if (mBigliettoLayout.getVisibility() == View.GONE) {
+            mBigliettoLayout.animate().setInterpolator(interpolator).alpha(1f).setDuration(1500).start();
+            mBigliettoLayout.setVisibility(View.VISIBLE);
+
+            ViewGroup root = (ViewGroup) parent;
+            android.transition.TransitionManager.beginDelayedTransition(root);
+            AutoTransition transition = new AutoTransition();
+            transition.setDuration(2000);
+            android.transition.TransitionManager.beginDelayedTransition(root, transition);
+        }
+    }
+
+    private void closeTicketBtn() {
+        if (mBigliettoLayout.getVisibility() == View.VISIBLE) {
+            mBigliettoLayout.animate().setInterpolator(interpolator).alpha(0f).setDuration(1500).start();
+            mBigliettoLayout.setVisibility(View.GONE);
+
+            ViewGroup root = (ViewGroup) parent;
+            android.transition.TransitionManager.beginDelayedTransition(root);
+            AutoTransition transition = new AutoTransition();
+            transition.setDuration(2000);
+            android.transition.TransitionManager.beginDelayedTransition(root, transition);
+        }
+    }
+
     private void addPurchase() {
         String name = mNameET.getText().toString().trim();
-        String type = mTypeBtn.getText().toString().trim();
-        String priceString = mPriceET.getText().toString().trim();
+        String type;
+        if (mGenBtn.isSelected() || mTotSwitch.isChecked()) {
+            type = "Generico";
+        } else if (mSpeBtn.isSelected()) {
+            type = "Spesa";
+        } else {
+            type = "Biglietto";
+        }
 
         // controlla le info aggiunte
-
         if (TextUtils.isEmpty(name)) {
             mNameET.setError("Inserisci il nome dell'acquisto.");
             return;
         }
 
-        if (name.equals("Totale")) {
+        if (name.equals("Totale") && !mTotSwitch.isChecked()) {
             mNameET.setError("L'acquisto non può chiamarsi 'Totale'.");
             return;
         }
 
-        if (TextUtils.isEmpty(priceString)) {
-            mPriceET.setError("Inserisci il costo dell'acquisto.");
-            return;
+        double price;
+        if (mTotSwitch.isChecked()) {
+            price = 0;
+        } else {
+            String priceString = mPriceET.getText().toString().trim();
+            if (TextUtils.isEmpty(priceString)) {
+                mPriceET.setError("Inserisci il costo dell'acquisto.");
+                return;
+            }
+            price = Double.parseDouble(priceString);
         }
-        double price = Double.parseDouble(priceString);
 
-        Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, type, price, year, month, day, 1);
+        if (mTotSwitch.isChecked()) {
+            Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, type, price, year, month, day, 0);
 
-        FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-        fStore.collection("purchases").add(purchase)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
-                MainActivity.PURCHASELIST.add(purchase);
-                double sum = 0;
-                for (Purchase item : MainActivity.PURCHASELIST) {
-                    if (!item.getType().equals("Biglietto")) {
-                        if (item.getEmail().equals(MainActivity.CURRENTUSER.getEmail()) && item.getYear() == year
-                                && item.getMonth() == month && item.getDay() == day && item.getNum() == 1) {
-                            sum += item.getPrice();
+            FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+            String totID = year + "" + month + ""+ day;
+            fStore.collection("purchases").document(totID).set(purchase)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            ((MainActivity)getActivity()).showSnackbar("Totale aggiunto!");
+                            ((MainActivity)getActivity()).goToList();
                         }
-                    }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                    ((MainActivity)getActivity()).showSnackbar("Totale non aggiunto!");
                 }
-                Purchase totalP = new Purchase(MainActivity.CURRENTUSER.getEmail(), "Totale", "Generico", sum, year, month, day, 0);
-                FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-                String totID = year + "" + month + ""+ day;
-                fStore.collection("purchases").document(totID).set(totalP)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                ((MainActivity)getActivity()).showSnackbar("Acquisto aggiunto!");
-                                ((MainActivity)getActivity()).goToList();
+            });
+        } else {
+            Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, type, price, year, month, day, 1);
+
+            FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+            fStore.collection("purchases").add(purchase)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            MainActivity.PURCHASELIST.add(purchase);
+                            double sum = 0;
+                            for (Purchase item : MainActivity.PURCHASELIST) {
+                                if (!item.getType().equals("Biglietto")) {
+                                    if (item.getEmail().equals(MainActivity.CURRENTUSER.getEmail()) && item.getYear() == year
+                                            && item.getMonth() == month && item.getDay() == day && item.getNum() == 1) {
+                                        sum += item.getPrice();
+                                    }
+                                }
                             }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("LOG", "Error! " + e.getLocalizedMessage());
-                        ((MainActivity)getActivity()).showSnackbar("Acquisto non aggiunto correttamente!");
-                    }
-                });
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e("LOG", "Error! " + e.getLocalizedMessage());
-                ((MainActivity)getActivity()).showSnackbar("Acquisto non aggiunto!");
-            }
-        });
+                            Purchase totalP = new Purchase(MainActivity.CURRENTUSER.getEmail(), "Totale", "Generico", sum, year, month, day, 0);
+                            FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+                            String totID = year + "" + month + ""+ day;
+                            fStore.collection("purchases").document(totID).set(totalP)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            ((MainActivity)getActivity()).showSnackbar("Acquisto aggiunto!");
+                                            ((MainActivity)getActivity()).goToList();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                                    ((MainActivity)getActivity()).showSnackbar("Acquisto non aggiunto correttamente!");
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                    ((MainActivity)getActivity()).showSnackbar("Acquisto non aggiunto!");
+                }
+            });
+        }
     }
 }

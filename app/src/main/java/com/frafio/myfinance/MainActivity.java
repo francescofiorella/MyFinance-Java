@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // servono per la snackbar
         nunito = ResourcesCompat.getFont(getApplicationContext(), R.font.nunito);
         layout = findViewById(R.id.main_layout);
 
@@ -78,12 +79,15 @@ public class MainActivity extends AppCompatActivity {
         mBottomNavigationView = findViewById(R.id.main_bottomNavView);
         mAddBtn = findViewById(R.id.main_addBtn);
 
-        previousFragment = 0;
+        interpolator = new OvershootInterpolator();
 
+        // inizializza i fragments
+        previousFragment = 0;
         if (savedInstanceState == null) {
             setFragment(1);
         }
 
+        // controlla se si è appena fatto l'accesso
         fAuth = FirebaseAuth.getInstance();
         if (getIntent().hasExtra("com.frafio.myfinance.userRequest")){
             boolean userRequest = getIntent().getExtras().getBoolean("com.frafio.myfinance.userRequest", false);
@@ -92,8 +96,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        // aggiorna i dati dell'utente
         updateCurrentUser();
 
+        // imposta la bottomNavView
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -115,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // imposta il fragment 5
         mAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // metodo per cambiare fragment (senza influenzare la bottomNavView)
     public void setFragment(int num) {
         if (currentFragment != num) {
             previousFragment = currentFragment;
@@ -164,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // metodo per tornare al fragment precedente (cambiando anche la bottomNavView)
     public void goToPreviousFragment() {
         switch (previousFragment) {
             case 1:
@@ -184,10 +193,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // vai al fragment 2
     public void goToList() {
         mBottomNavigationView.setSelectedItemId(R.id.list);
     }
 
+    // metodo per aggiornare i dati dell'utente
     private void updateCurrentUser() {
         fAuth = FirebaseAuth.getInstance();
         FirebaseUser fUser = fAuth.getCurrentUser();
@@ -208,27 +219,32 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
-            if (PURCHASELIST == null) {
-                PURCHASELIST = new LinkedList<>();
-                FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-                fStore.collection("purchases").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (DocumentSnapshot document : queryDocumentSnapshots) {
-                            Purchase purchase = document.toObject(Purchase.class);
-                            PURCHASELIST.add(purchase);
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("LOG", "Error! " + e.getLocalizedMessage());
-                    }
-                });
-            }
+
+            updateList();
         }
     }
 
+    // metodo per aggiornare i progressi dell'utente
+    private void updateList() {
+        PURCHASELIST = new LinkedList<>();
+        FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+        fStore.collection("purchases").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (DocumentSnapshot document : queryDocumentSnapshots) {
+                    Purchase purchase = document.toObject(Purchase.class);
+                    PURCHASELIST.add(purchase);
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("LOG", "Error! " + e.getLocalizedMessage());
+            }
+        });
+    }
+
+    // backPressed
     @Override
     public void onBackPressed() {
         if (currentFragment == 5) {
@@ -240,6 +256,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // snackbar
     public void showSnackbar(String string) {
         Snackbar snackbar = Snackbar.make(layout, string, BaseTransientBottomBar.LENGTH_SHORT).setAnchorView(mAddBtn)
                 .setBackgroundTint(ContextCompat.getColor(getApplicationContext(), R.color.snackbar))

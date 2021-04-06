@@ -60,6 +60,7 @@ public class ListFragment extends Fragment {
                 holder.rCostoTV.setText("€" + model.getPrice());
 
                 if (model.getName().equals("Totale")) {
+                    holder.rItemLayout.setClickable(false);
                     holder.rNomeTV.setText(model.getName());
                     holder.rNomeTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
                     holder.rDateLayout.setVisibility(View.VISIBLE);
