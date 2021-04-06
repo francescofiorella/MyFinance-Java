@@ -20,6 +20,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.cottacush.android.currencyedittext.CurrencyEditText;
 import com.frafio.myfinance.MainActivity;
 import com.frafio.myfinance.R;
 import com.frafio.myfinance.objects.Purchase;
@@ -39,7 +40,8 @@ import java.util.TimeZone;
 
 public class AddFragment extends Fragment {
 
-    EditText mNameET, mPriceET;
+    EditText mNameET;
+    CurrencyEditText mPriceET;
     ConstraintLayout mDateBtn, parent;
     GridLayout mBigliettoLayout;
     TextView mDateET, mGenBtn, mSpeBtn, mBigBtn, mTIBtn, mAmBtn, mAltroBtn;
@@ -83,7 +85,7 @@ public class AddFragment extends Fragment {
                     mNameET.setText("Totale");
                     mNameET.setEnabled(false);
 
-                    mPriceET.setText("€0.00");
+                    mPriceET.setText("€ 0.00");
                     mPriceET.setEnabled(false);
 
                     mNameET.setError(null);
@@ -320,14 +322,6 @@ public class AddFragment extends Fragment {
 
     private void addPurchase() {
         String name = mNameET.getText().toString().trim();
-        String type;
-        if (mGenBtn.isSelected() || mTotSwitch.isChecked()) {
-            type = "Generico";
-        } else if (mSpeBtn.isSelected()) {
-            type = "Spesa";
-        } else {
-            type = "Biglietto";
-        }
 
         // controlla le info aggiunte
         if (TextUtils.isEmpty(name)) {
@@ -340,20 +334,8 @@ public class AddFragment extends Fragment {
             return;
         }
 
-        double price;
         if (mTotSwitch.isChecked()) {
-            price = 0;
-        } else {
-            String priceString = mPriceET.getText().toString().trim();
-            if (TextUtils.isEmpty(priceString)) {
-                mPriceET.setError("Inserisci il costo dell'acquisto.");
-                return;
-            }
-            price = Double.parseDouble(priceString);
-        }
-
-        if (mTotSwitch.isChecked()) {
-            Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, type, price, year, month, day, 0);
+            Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, "Generico", 0.0, year, month, day, 0);
 
             FirebaseFirestore fStore = FirebaseFirestore.getInstance();
             String totID = year + "" + month + ""+ day;
@@ -372,6 +354,22 @@ public class AddFragment extends Fragment {
                 }
             });
         } else {
+            String type;
+            if (mGenBtn.isSelected()) {
+                type = "Generico";
+            } else if (mSpeBtn.isSelected()) {
+                type = "Spesa";
+            } else {
+                type = "Biglietto";
+            }
+
+            double price = mPriceET.getNumericValue();
+            String priceString = mPriceET.getText().toString().trim();
+            if (TextUtils.isEmpty(priceString)) {
+                mPriceET.setError("Inserisci il costo dell'acquisto.");
+                return;
+            }
+
             Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, type, price, year, month, day, 1);
 
             FirebaseFirestore fStore = FirebaseFirestore.getInstance();

@@ -58,11 +58,11 @@
         app:layout_constraintTop_toBottomOf="@id/recView_purchaseItem_dateLayout" />
 
     <TextView
-        android:id="@+id/recView_purchaseItem_costoTextView"
+        android:id="@+id/recView_purchaseItem_priceTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/nunito"
-        android:text="Costo"
+        android:text="Prezzo"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/recView_purchaseItem_nomeTextView"
         app:layout_constraintEnd_toEndOf="parent"

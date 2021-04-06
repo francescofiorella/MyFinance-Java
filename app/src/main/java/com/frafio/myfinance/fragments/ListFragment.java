@@ -21,6 +21,10 @@ import com.frafio.myfinance.objects.Purchase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class ListFragment extends Fragment {
 
     RecyclerView mRecyclerView;
@@ -57,7 +61,11 @@ public class ListFragment extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull ListFragment.PurchaseViewHolder holder, int position, @NonNull Purchase model) {
-                holder.rCostoTV.setText("€" + model.getPrice());
+                Locale locale = new Locale("en", "UK");
+                NumberFormat nf = NumberFormat.getInstance(locale);
+                DecimalFormat formatter = (DecimalFormat) nf;
+                formatter.applyPattern("###,###,##0.00");
+                holder.rPriceTV.setText("€ " + formatter.format(model.getPrice()));
 
                 if (model.getName().equals("Totale")) {
                     holder.rItemLayout.setClickable(false);
@@ -91,14 +99,14 @@ public class ListFragment extends Fragment {
     private class PurchaseViewHolder extends RecyclerView.ViewHolder{
 
         ConstraintLayout rItemLayout, rDateLayout;
-        TextView rNomeTV, rCostoTV, rDataTV;
+        TextView rNomeTV, rPriceTV, rDataTV;
 
         public PurchaseViewHolder(@NonNull View itemView) {
             super(itemView);
             rItemLayout = itemView.findViewById(R.id.recView_purchaseItem_constraintLayout);
             rDateLayout = itemView.findViewById(R.id.recView_purchaseItem_dateLayout);
             rNomeTV = itemView.findViewById(R.id.recView_purchaseItem_nomeTextView);
-            rCostoTV = itemView.findViewById(R.id.recView_purchaseItem_costoTextView);
+            rPriceTV = itemView.findViewById(R.id.recView_purchaseItem_priceTextView);
             rDataTV = itemView.findViewById(R.id.recView_purchaseItem_dataTextView);
         }
     }
