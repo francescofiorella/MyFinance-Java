@@ -1,5 +1,6 @@
 package com.frafio.myfinance.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.frafio.myfinance.PurchaseActivity;
 import com.frafio.myfinance.R;
 import com.frafio.myfinance.objects.Purchase;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -46,7 +48,7 @@ public class ListFragment extends Fragment {
         // query
         Query query = fStore.collection("purchases").orderBy("year", Query.Direction.DESCENDING)
                 .orderBy("month", Query.Direction.DESCENDING).orderBy("day", Query.Direction.DESCENDING)
-                .orderBy("num").orderBy("name");
+                .orderBy("type").orderBy("price", Query.Direction.DESCENDING);
 
         // recyclerOptions
         FirestoreRecyclerOptions<Purchase> options = new FirestoreRecyclerOptions.Builder<Purchase>().setQuery(query, Purchase.class).build();
@@ -86,6 +88,19 @@ public class ListFragment extends Fragment {
                     holder.rDataTV.setText(dayString + "/" + monthString + "/" + model.getYear());
                 } else {
                     holder.rNomeTV.setText("   " + model.getName());
+                }
+
+                if (model.getType() == 1) {
+                    holder.rItemLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String purchaseID = getSnapshots().getSnapshot(position).getId();
+                            Intent intent = new Intent(getContext(), PurchaseActivity.class);
+                            intent.putExtra("com.frafio.myfinance.purchaseID", purchaseID);
+                            intent.putExtra("com.frafio.myfinance.purchaseName", model.getName());
+                            startActivity(intent);
+                        }
+                    });
                 }
             }
         };

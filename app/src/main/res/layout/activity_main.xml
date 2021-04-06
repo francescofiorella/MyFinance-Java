@@ -26,7 +26,6 @@
                 app:title="@string/app_name"
                 app:titleTextColor="@color/white"
                 app:titleTextAppearance="@style/TextAppearance.MyFinance.Toolbar.MainTitle"
-                android:theme="@style/ThemeOverlay.MyFinance.Toolbar"
                 style="@style/Widget.MaterialComponents.Toolbar.Primary"/>
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -43,7 +42,7 @@
             android:layout_below="@id/main_appBarLayout"/>
 
         <View
-            android:id="@+id/divider"
+            android:id="@+id/main_divider"
             android:layout_width="match_parent"
             android:layout_height="0.1dp"
             android:layout_below="@id/main_fragmentTitle"
@@ -54,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="56dp"
-            android:layout_below="@id/divider"/>
+            android:layout_below="@id/main_divider"/>
 
     </RelativeLayout>
 

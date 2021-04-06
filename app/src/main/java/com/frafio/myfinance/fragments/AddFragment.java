@@ -335,7 +335,7 @@ public class AddFragment extends Fragment {
         }
 
         if (mTotSwitch.isChecked()) {
-            Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, "Totale", 0.0, year, month, day, 0);
+            Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, 0.0, year, month, day, 0);
 
             FirebaseFirestore fStore = FirebaseFirestore.getInstance();
             String totID = year + "" + month + ""+ day;
@@ -354,13 +354,13 @@ public class AddFragment extends Fragment {
                 }
             });
         } else {
-            String type;
+            int type;
             if (mGenBtn.isSelected()) {
-                type = "Generico";
+                type = 2;
             } else if (mSpeBtn.isSelected()) {
-                type = "Spesa";
+                type = 1;
             } else {
-                type = "Biglietto";
+                type = 3;
             }
 
             double price = mPriceET.getNumericValue();
@@ -370,7 +370,7 @@ public class AddFragment extends Fragment {
                 return;
             }
 
-            Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, type, price, year, month, day, 1);
+            Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, price, year, month, day, type);
 
             FirebaseFirestore fStore = FirebaseFirestore.getInstance();
             fStore.collection("purchases").add(purchase)
@@ -380,14 +380,13 @@ public class AddFragment extends Fragment {
                             MainActivity.PURCHASELIST.add(purchase);
                             double sum = 0;
                             for (Purchase item : MainActivity.PURCHASELIST) {
-                                if (!item.getType().equals("Biglietto")) {
-                                    if (item.getEmail().equals(MainActivity.CURRENTUSER.getEmail()) && item.getYear() == year
-                                            && item.getMonth() == month && item.getDay() == day && item.getNum() == 1) {
-                                        sum += item.getPrice();
-                                    }
+                                if (item.getEmail().equals(MainActivity.CURRENTUSER.getEmail())
+                                        && item.getType() != 0 && item.getType() != 3
+                                        && item.getYear() == year && item.getMonth() == month && item.getDay() == day) {
+                                    sum += item.getPrice();
                                 }
                             }
-                            Purchase totalP = new Purchase(MainActivity.CURRENTUSER.getEmail(), "Totale", "Generico", sum, year, month, day, 0);
+                            Purchase totalP = new Purchase(MainActivity.CURRENTUSER.getEmail(), "Totale", sum, year, month, day, 0);
                             FirebaseFirestore fStore = FirebaseFirestore.getInstance();
                             String totID = year + "" + month + ""+ day;
                             fStore.collection("purchases").document(totID).set(totalP)

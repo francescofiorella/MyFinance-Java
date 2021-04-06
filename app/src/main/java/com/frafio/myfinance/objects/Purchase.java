@@ -3,20 +3,19 @@ package com.frafio.myfinance.objects;
 public class Purchase {
 
     // definizione campi
-    public String name, type, email;
+    public String name, email;
     public double price;
-    public int year, month, day, num;
+    public int year, month, day, type;
 
     // costruttore nuovo utente
-    public Purchase(String email, String name, String type, double price, int year, int month, int day, int num){
+    public Purchase(String email, String name, double price, int year, int month, int day, int type){
         this.email = email;
         this.name = name;
-        this.type = type;
         this.price = price;
         this.year = year;
         this.month = month;
         this.day = day;
-        this.num = num;
+        this.type = type;
     }
 
     // costruttore vuoto utile per FireBase
@@ -29,10 +28,6 @@ public class Purchase {
 
     public String getName() {
         return name;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public double getPrice() {
@@ -51,7 +46,7 @@ public class Purchase {
         return day;
     }
 
-    public int getNum() {
-        return num;
+    public int getType() {
+        return type;
     }
 }

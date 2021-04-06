@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/purchase_layout"
+    tools:context=".PurchaseActivity">
+
+    <!--Toolbar-->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/purchase_appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/purchase_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:title="@string/app_name"
+            app:titleTextColor="@color/white"
+            app:titleTextAppearance="@style/TextAppearance.MyFinance.Toolbar.MainTitle"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <TextView
+        android:id="@+id/purchase_purchaseTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nome acquisto"
+        android:fontFamily="@font/nunito"
+        android:textSize="21sp"
+        android:padding="10dp"
+        android:textColor="@color/primary_text"
+        android:layout_below="@id/purchase_appBarLayout"/>
+
+    <View
+        android:id="@+id/purchase_divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:layout_below="@id/purchase_purchaseTitle"
+        android:background="@color/primary_text" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/purchase_divider">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/purchase_addBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:backgroundTint="@color/accent"
+            app:elevation="2dp"
+            app:srcCompat="@drawable/ic_add"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>
