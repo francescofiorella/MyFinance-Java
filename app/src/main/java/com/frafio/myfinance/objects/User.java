@@ -5,7 +5,7 @@ public class User {
     // definizione campi
     public String fullName, email, image;
 
-    // costruttore nuovo utente
+    // costruttore
     public User(String fullName, String email, String image){
         this.fullName = fullName;
         this.email = email;

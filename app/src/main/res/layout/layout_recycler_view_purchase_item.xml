@@ -40,7 +40,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/recView_purchaseItem_dataTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/recView_purchaseItem_dataTextView"
-            app:layout_constraintTop_toTopOf="@+id/recView_purchaseItem_dataTextView" />
+            app:layout_constraintTop_toTopOf="@id/recView_purchaseItem_dataTextView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -64,8 +64,8 @@
         android:fontFamily="@font/nunito"
         android:text="Prezzo"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/recView_purchaseItem_nomeTextView"
+        app:layout_constraintBottom_toBottomOf="@id/recView_purchaseItem_nomeTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/recView_purchaseItem_nomeTextView" />
+        app:layout_constraintTop_toTopOf="@id/recView_purchaseItem_nomeTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

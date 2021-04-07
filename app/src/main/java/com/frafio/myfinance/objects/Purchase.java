@@ -7,7 +7,7 @@ public class Purchase {
     public double price;
     public int year, month, day, type;
 
-    // costruttore nuovo utente
+    // costruttore
     public Purchase(String email, String name, double price, int year, int month, int day, int type){
         this.email = email;
         this.name = name;

@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.frafio.myfinance.PurchaseActivity;
+import com.frafio.myfinance.ReceiptActivity;
 import com.frafio.myfinance.R;
 import com.frafio.myfinance.objects.Purchase;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -38,12 +38,12 @@ public class ListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
 
         mRecyclerView = view.findViewById(R.id.list_recyclerView);
-        loadLista();
+        loadPurchasesList();
 
         return view;
     }
 
-    private void loadLista() {
+    private void loadPurchasesList() {
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
         // query
         Query query = fStore.collection("purchases").orderBy("year", Query.Direction.DESCENDING)
@@ -95,7 +95,7 @@ public class ListFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             String purchaseID = getSnapshots().getSnapshot(position).getId();
-                            Intent intent = new Intent(getContext(), PurchaseActivity.class);
+                            Intent intent = new Intent(getContext(), ReceiptActivity.class);
                             intent.putExtra("com.frafio.myfinance.purchaseID", purchaseID);
                             intent.putExtra("com.frafio.myfinance.purchaseName", model.getName());
                             startActivity(intent);

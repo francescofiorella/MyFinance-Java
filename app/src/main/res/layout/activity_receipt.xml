@@ -5,17 +5,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/purchase_layout"
-    tools:context=".PurchaseActivity">
+    android:id="@+id/receipt_layout"
+    tools:context=".ReceiptActivity">
 
     <!--Toolbar-->
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/purchase_appBarLayout"
+        android:id="@+id/receipt_appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/purchase_toolbar"
+            android:id="@+id/receipt_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
@@ -27,7 +27,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
-        android:id="@+id/purchase_purchaseTitle"
+        android:id="@+id/receipt_purchaseTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Nome acquisto"
@@ -35,22 +35,31 @@
         android:textSize="21sp"
         android:padding="10dp"
         android:textColor="@color/primary_text"
-        android:layout_below="@id/purchase_appBarLayout"/>
+        android:layout_below="@id/receipt_appBarLayout"/>
 
     <View
-        android:id="@+id/purchase_divider"
+        android:id="@+id/receipt_divider"
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
-        android:layout_below="@id/purchase_purchaseTitle"
+        android:layout_below="@id/receipt_purchaseTitle"
         android:background="@color/primary_text" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/purchase_divider">
+        android:layout_below="@id/receipt_divider">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/purchase_addBtn"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/receipt_recView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/receipt_addBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
@@ -59,7 +68,8 @@
             android:focusable="true"
             app:backgroundTint="@color/accent"
             app:elevation="2dp"
-            app:srcCompat="@drawable/ic_add"
+            android:text="Aggiungi"
+            app:icon="@drawable/ic_add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
