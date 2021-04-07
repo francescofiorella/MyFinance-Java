@@ -34,6 +34,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.LinkedList;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     // definizione variabili
     static public User CURRENTUSER;
     static public List<Purchase> PURCHASELIST;
+    static public List<String> PURCHASEIDLIST;
 
     CoordinatorLayout layout;
     Typeface nunito;
@@ -193,11 +195,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // vai al fragment 2
-    public void goToList() {
-        mBottomNavigationView.setSelectedItemId(R.id.list);
-    }
-
     // metodo per aggiornare i dati dell'utente
     private void updateCurrentUser() {
         fAuth = FirebaseAuth.getInstance();
@@ -220,20 +217,30 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
 
-            updateList();
+            updateList(false);
         }
     }
 
     // metodo per aggiornare i progressi dell'utente
-    private void updateList() {
+    public void updateList(boolean goToList) {
         PURCHASELIST = new LinkedList<>();
+        PURCHASEIDLIST = new LinkedList<>();
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-        fStore.collection("purchases").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        fStore.collection("purchases").orderBy("year", Query.Direction.DESCENDING)
+                .orderBy("month", Query.Direction.DESCENDING).orderBy("day", Query.Direction.DESCENDING)
+                .orderBy("type").orderBy("price", Query.Direction.DESCENDING).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                int position = 0;
                 for (DocumentSnapshot document : queryDocumentSnapshots) {
                     Purchase purchase = document.toObject(Purchase.class);
-                    PURCHASELIST.add(purchase);
+                    PURCHASEIDLIST.add(position, document.getId());
+                    PURCHASELIST.add(position, purchase);
+                    position ++;
+                }
+                if (goToList) {
+                    mBottomNavigationView.setSelectedItemId(R.id.list);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {

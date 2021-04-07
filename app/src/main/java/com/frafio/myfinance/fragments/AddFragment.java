@@ -343,8 +343,8 @@ public class AddFragment extends Fragment {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+                            ((MainActivity)getActivity()).updateList(true);
                             ((MainActivity)getActivity()).showSnackbar("Totale aggiunto!");
-                            ((MainActivity)getActivity()).goToList();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -377,8 +377,12 @@ public class AddFragment extends Fragment {
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
-                            MainActivity.PURCHASELIST.add(purchase);
-                            double sum = 0;
+                            double sum;
+                            if (purchase.getType() != 3) {
+                                sum = purchase.getPrice();
+                            } else {
+                                sum = 0;
+                            }
                             for (Purchase item : MainActivity.PURCHASELIST) {
                                 if (item.getEmail().equals(MainActivity.CURRENTUSER.getEmail())
                                         && item.getType() != 0 && item.getType() != 3
@@ -393,8 +397,8 @@ public class AddFragment extends Fragment {
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
+                                            ((MainActivity)getActivity()).updateList(true);
                                             ((MainActivity)getActivity()).showSnackbar("Acquisto aggiunto!");
-                                            ((MainActivity)getActivity()).goToList();
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                 @Override

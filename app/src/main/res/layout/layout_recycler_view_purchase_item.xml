@@ -11,7 +11,7 @@
     android:background="?attr/selectableItemBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/recView_purchaseItem_dateLayout"
+        android:id="@+id/recView_purchaseItem_dataLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
@@ -55,7 +55,7 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recView_purchaseItem_dateLayout" />
+        app:layout_constraintTop_toBottomOf="@id/recView_purchaseItem_dataLayout" />
 
     <TextView
         android:id="@+id/recView_purchaseItem_priceTextView"
