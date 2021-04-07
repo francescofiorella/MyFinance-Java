@@ -85,9 +85,6 @@ public class MainActivity extends AppCompatActivity {
 
         // inizializza i fragments
         previousFragment = 0;
-        if (savedInstanceState == null) {
-            setFragment(1);
-        }
 
         // controlla se si è appena fatto l'accesso
         fAuth = FirebaseAuth.getInstance();
@@ -239,8 +236,11 @@ public class MainActivity extends AppCompatActivity {
                     PURCHASELIST.add(position, purchase);
                     position ++;
                 }
+
                 if (goToList) {
                     mBottomNavigationView.setSelectedItemId(R.id.list);
+                } else if (previousFragment == 0) {
+                    setFragment(1);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {

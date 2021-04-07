@@ -52,6 +52,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/dayAvg_TV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nunito"
@@ -76,7 +77,7 @@
             app:cardElevation="@dimen/card_elevation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/materialCardView">
+            app:layout_constraintTop_toBottomOf="@id/materialCardView">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -97,6 +98,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/monthAvg_TV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nunito"
@@ -154,6 +156,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/todayTot_TV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nunito"
@@ -199,6 +202,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/tot_TV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nunito"
@@ -208,6 +212,52 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/textView4" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            app:cardBackgroundColor="@color/edit_text"
+            app:cardCornerRadius="@dimen/card_corner_radius"
+            app:cardElevation="@dimen/card_elevation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/materialCardView4">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15dp">
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:text="Numero acquisti"
+                    android:textColor="@color/primary_text"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/numTot_TV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nunito"
+                    android:text="0"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textView5" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -223,10 +273,10 @@
             android:textColor="@color/primary_text"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/materialCardView4" />
+            app:layout_constraintTop_toBottomOf="@id/materialCardView5" />
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/materialCardView5"
+            android:id="@+id/materialCardView6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
@@ -243,7 +293,7 @@
                 android:padding="15dp">
 
                 <TextView
-                    android:id="@+id/textView5"
+                    android:id="@+id/textView6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
@@ -256,55 +306,11 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/ticketTot_TV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nunito"
                     android:text="€ 0.00"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textView5" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/materialCardView6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            app:cardBackgroundColor="@color/edit_text"
-            app:cardCornerRadius="@dimen/card_corner_radius"
-            app:cardElevation="@dimen/card_elevation"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/materialCardView5">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="15dp">
-
-                <TextView
-                    android:id="@+id/textView6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:fontFamily="@font/nunito_bold"
-                    android:text="Numero biglietti TrenItalia"
-                    android:textColor="@color/primary_text"
-                    android:textSize="20sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/nunito"
-                    android:text="0"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -316,19 +322,16 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="40dp"
+            android:layout_margin="15dp"
             app:cardBackgroundColor="@color/edit_text"
             app:cardCornerRadius="@dimen/card_corner_radius"
             app:cardElevation="@dimen/card_elevation"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/materialCardView6">
+            app:layout_constraintTop_toBottomOf="@id/materialCardView6">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -341,7 +344,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/nunito_bold"
-                    android:text="Numero acquisti"
+                    android:text="Numero biglietti TrenItalia"
                     android:textColor="@color/primary_text"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -349,6 +352,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/trenTot_TV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nunito"
@@ -358,6 +362,55 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/textView7" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginBottom="40dp"
+            app:cardBackgroundColor="@color/edit_text"
+            app:cardCornerRadius="@dimen/card_corner_radius"
+            app:cardElevation="@dimen/card_elevation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/materialCardView7"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15dp">
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:text="Numero biglietti Amtab"
+                    android:textColor="@color/primary_text"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/amTot_TV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nunito"
+                    android:text="0"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textView8" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
