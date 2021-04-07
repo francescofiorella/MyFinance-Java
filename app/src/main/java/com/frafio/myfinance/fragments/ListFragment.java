@@ -67,9 +67,10 @@ public class ListFragment extends Fragment {
                 NumberFormat nf = NumberFormat.getInstance(locale);
                 DecimalFormat formatter = (DecimalFormat) nf;
                 formatter.applyPattern("###,###,##0.00");
-                holder.rPriceTV.setText("€ " + formatter.format(model.getPrice()));
+                String priceString = "€ " + formatter.format(model.getPrice());
+                holder.rPriceTV.setText(priceString);
 
-                if (model.getName().equals("Totale")) {
+                if (model.getType() == 0) {
                     holder.rItemLayout.setClickable(false);
                     holder.rNomeTV.setText(model.getName());
                     holder.rNomeTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
@@ -98,6 +99,7 @@ public class ListFragment extends Fragment {
                             Intent intent = new Intent(getContext(), ReceiptActivity.class);
                             intent.putExtra("com.frafio.myfinance.purchaseID", purchaseID);
                             intent.putExtra("com.frafio.myfinance.purchaseName", model.getName());
+                            intent.putExtra("com.frafio.myfinance.purchasePrice", priceString);
                             startActivity(intent);
                         }
                     });

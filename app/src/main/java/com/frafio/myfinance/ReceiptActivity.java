@@ -11,15 +11,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.cottacush.android.currencyedittext.CurrencyEditText;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.frafio.myfinance.fragments.ListFragment;
@@ -31,6 +36,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -46,13 +52,14 @@ public class ReceiptActivity extends AppCompatActivity {
     Typeface nunito;
 
     MaterialToolbar mToolbar;
-    TextView mTitleTV;
+    TextView mTitleTV, mPriceTV;
     RecyclerView mRecyclerView;
     FirestoreRecyclerAdapter adapter;
+    EditText mNameET;
+    CurrencyEditText mPriceET;
     ExtendedFloatingActionButton mAddBtn;
 
-    String purchaseID;
-    String purchaseName;
+    String purchaseID, purchaseName, purchasePrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,16 +79,28 @@ public class ReceiptActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mTitleTV = findViewById(R.id.receipt_purchaseTitle);
+        mPriceTV = findViewById(R.id.receipt_purchasePrice);
         mRecyclerView = findViewById(R.id.receipt_recView);
+        mNameET = findViewById(R.id.receipt_name_EditText);
+        mPriceET = findViewById(R.id.receipt_price_EditText);
         mAddBtn = findViewById(R.id.receipt_addBtn);
 
         // retrieve purchase data from intent
         purchaseID = getIntent().getStringExtra("com.frafio.myfinance.purchaseID");
         purchaseName = getIntent().getStringExtra("com.frafio.myfinance.purchaseName");
+        purchasePrice = getIntent().getStringExtra("com.frafio.myfinance.purchasePrice");
 
         mTitleTV.setText(purchaseName);
+        mPriceTV.setText(purchasePrice);
 
         loadReceiptList();
+
+        mAddBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addItem();
+            }
+        });
     }
 
     private void loadReceiptList() {
@@ -102,7 +121,13 @@ public class ReceiptActivity extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull ReceiptActivity.ReceiptItemViewHolder holder, int position, @NonNull ReceiptItem model) {
+                holder.rNomeTV.setText(model.getName());
 
+                Locale locale = new Locale("en", "UK");
+                NumberFormat nf = NumberFormat.getInstance(locale);
+                DecimalFormat formatter = (DecimalFormat) nf;
+                formatter.applyPattern("###,###,##0.00");
+                holder.rPriceTV.setText("€ " + formatter.format(model.getPrice()));
             }
         };
 
@@ -123,6 +148,41 @@ public class ReceiptActivity extends AppCompatActivity {
             rNomeTV = itemView.findViewById(R.id.recView_receiptItem_nomeTextView);
             rPriceTV = itemView.findViewById(R.id.recView_receiptItem_priceTextView);
         }
+    }
+
+    private void addItem() {
+        String name = mNameET.getText().toString().trim();
+        double price = mPriceET.getNumericValue();
+        String priceString = mPriceET.getText().toString().trim();
+
+        // controlla le info aggiunte
+        if (TextUtils.isEmpty(name)) {
+            mNameET.setError("Inserisci il nome dell'acquisto.");
+            return;
+        }
+
+        if (TextUtils.isEmpty(priceString)) {
+            mPriceET.setError("Inserisci il costo dell'acquisto.");
+            return;
+        }
+
+        ReceiptItem item = new ReceiptItem(name, price);
+        FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+        fStore.collection("purchases").document(purchaseID).collection("receipt").add(item)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                showSnackbar("Voce aggiunta!");
+                mNameET.setText("");
+                mPriceET.setText("");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                showSnackbar("Voce non aggiunta!");
+            }
+        });
     }
 
     //start&stop listening
@@ -150,7 +210,7 @@ public class ReceiptActivity extends AppCompatActivity {
     }
 
     private void showSnackbar(String string) {
-        Snackbar snackbar = Snackbar.make(layout, string, BaseTransientBottomBar.LENGTH_SHORT)
+        Snackbar snackbar = Snackbar.make(layout, string, BaseTransientBottomBar.LENGTH_SHORT).setAnchorView(mNameET)
                 .setBackgroundTint(ContextCompat.getColor(getApplicationContext(), R.color.snackbar))
                 .setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.inverted_primary_text));
         TextView tv = (snackbar.getView()).findViewById((R.id.snackbar_text));
