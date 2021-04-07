@@ -3,7 +3,9 @@ package com.frafio.myfinance.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.TypedValue;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +18,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.frafio.myfinance.MainActivity;
 import com.frafio.myfinance.ReceiptActivity;
 import com.frafio.myfinance.R;
 import com.frafio.myfinance.objects.Purchase;
+import com.google.android.material.card.MaterialCardView;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -30,7 +32,6 @@ import java.util.Locale;
 public class ListFragment extends Fragment {
 
     RecyclerView mRecyclerView;
-    FirestoreRecyclerAdapter adapter;
 
     @Nullable
     @Override
@@ -99,7 +100,10 @@ public class ListFragment extends Fragment {
 
                 holder.dataTV.setText(dayString + "/" + monthString + "/" + purchaseList.get(position).getYear());
             } else {
+                holder.itemLayout.setClickable(true);
+                holder.itemLayout.setOnClickListener(null);
                 holder.nomeTV.setText("   " + purchaseList.get(position).getName());
+                holder.nomeTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
                 holder.dataLayout.setVisibility(View.GONE);
             }
 
