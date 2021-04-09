@@ -1,77 +1,99 @@
-package com.frafio.myfinance.fragments;
+package com.frafio.myfinance;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.transition.AutoTransition;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
 import com.cottacush.android.currencyedittext.CurrencyEditText;
-import com.frafio.myfinance.MainActivity;
-import com.frafio.myfinance.R;
 import com.frafio.myfinance.objects.Purchase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.button.MaterialButton;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.TimeZone;
 
-public class AddFragment extends Fragment {
+public class AddActivity extends AppCompatActivity {
 
+    RelativeLayout layout;
+    Typeface nunito;
+
+    MaterialToolbar mToolbar;
     EditText mNameET;
     CurrencyEditText mPriceET;
-    ConstraintLayout mDateBtn, parent;
+    ConstraintLayout mDateBtn;
     GridLayout mBigliettoLayout;
     TextView mDateET, mGenBtn, mSpeBtn, mBigBtn, mTIBtn, mAmBtn, mAltroBtn;
     SwitchMaterial mTotSwitch;
-    MaterialButton mAddBtn;
+    ExtendedFloatingActionButton mAddBtn;
 
     int year, month, day;
 
     OvershootInterpolator interpolator;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_add, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add);
+
+        nunito = ResourcesCompat.getFont(getApplicationContext(), R.font.nunito);
+
+        // toolbar
+        mToolbar = findViewById(R.id.add_toolbar);
+        setSupportActionBar(mToolbar);
+
+        // back arrow
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // collegamento view
-        parent = view.findViewById(R.id.add_layout);
-        mNameET = view.findViewById(R.id.add_name_EditText);
-        mPriceET = view.findViewById(R.id.add_price_EditText);
-        mDateBtn = view.findViewById(R.id.add_dateLayout);
-        mDateET = view.findViewById(R.id.add_dateTextView);
-        mTotSwitch = view.findViewById(R.id.add_totale_switch);
-        mGenBtn = view.findViewById(R.id.add_generico_tv);
-        mSpeBtn = view.findViewById(R.id.add_spesa_tv);
-        mBigBtn = view.findViewById(R.id.add_biglietto_tv);
-        mBigliettoLayout = view.findViewById(R.id.add_bigliettoLayout);
-        mTIBtn = view.findViewById(R.id.add_trenitalia_tv);
-        mAmBtn = view.findViewById(R.id.add_amtab_tv);
-        mAltroBtn = view.findViewById(R.id.add_altro_tv);
-        mAddBtn = view.findViewById(R.id.add_addButton);
+        layout = findViewById(R.id.add_layout);
+        mNameET = findViewById(R.id.add_name_EditText);
+        mPriceET = findViewById(R.id.add_price_EditText);
+        mDateBtn = findViewById(R.id.add_dateLayout);
+        mDateET = findViewById(R.id.add_dateTextView);
+        mTotSwitch = findViewById(R.id.add_totale_switch);
+        mGenBtn = findViewById(R.id.add_generico_tv);
+        mSpeBtn = findViewById(R.id.add_spesa_tv);
+        mBigBtn = findViewById(R.id.add_biglietto_tv);
+        mBigliettoLayout = findViewById(R.id.add_bigliettoLayout);
+        mTIBtn = findViewById(R.id.add_trenitalia_tv);
+        mAmBtn = findViewById(R.id.add_amtab_tv);
+        mAltroBtn = findViewById(R.id.add_altro_tv);
+        mAddBtn = findViewById(R.id.add_addButton);
 
         interpolator = new OvershootInterpolator();
         mBigliettoLayout.setAlpha(0f);
@@ -121,7 +143,6 @@ public class AddFragment extends Fragment {
                 addPurchase();
             }
         });
-        return view;
     }
 
     private void setDatePicker() {
@@ -163,7 +184,7 @@ public class AddFragment extends Fragment {
 
     private void showDatePicker(MaterialDatePicker materialDatePicker) {
         if (!materialDatePicker.isAdded()) {
-            materialDatePicker.show(getActivity().getSupportFragmentManager(), "DATE_PICKER");
+            materialDatePicker.show(getSupportFragmentManager(), "DATE_PICKER");
             materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
                 @Override
                 public void onPositiveButtonClick(Object selection) {
@@ -196,14 +217,16 @@ public class AddFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!mGenBtn.isSelected()) {
+                    closeTicketBtn();
+
+                    if (mBigBtn.isSelected()) {
+                        mNameET.setText("");
+                    }
+                    mNameET.setEnabled(true);
+
                     mGenBtn.setSelected(true);
                     mSpeBtn.setSelected(false);
                     mBigBtn.setSelected(false);
-
-                    closeTicketBtn();
-
-                    mNameET.setText("");
-                    mNameET.setEnabled(true);
                 }
             }
         });
@@ -212,14 +235,16 @@ public class AddFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!mSpeBtn.isSelected()) {
+                    closeTicketBtn();
+
+                    if (mBigBtn.isSelected()) {
+                        mNameET.setText("");
+                    }
+                    mNameET.setEnabled(true);
+
                     mGenBtn.setSelected(false);
                     mSpeBtn.setSelected(true);
                     mBigBtn.setSelected(false);
-
-                    closeTicketBtn();
-
-                    mNameET.setText("");
-                    mNameET.setEnabled(true);
                 }
             }
         });
@@ -299,7 +324,7 @@ public class AddFragment extends Fragment {
             mBigliettoLayout.animate().setInterpolator(interpolator).alpha(1f).setDuration(1500).start();
             mBigliettoLayout.setVisibility(View.VISIBLE);
 
-            ViewGroup root = (ViewGroup) parent;
+            ViewGroup root = (ViewGroup) layout;
             android.transition.TransitionManager.beginDelayedTransition(root);
             AutoTransition transition = new AutoTransition();
             transition.setDuration(2000);
@@ -312,7 +337,7 @@ public class AddFragment extends Fragment {
             mBigliettoLayout.animate().setInterpolator(interpolator).alpha(0f).setDuration(1500).start();
             mBigliettoLayout.setVisibility(View.GONE);
 
-            ViewGroup root = (ViewGroup) parent;
+            ViewGroup root = (ViewGroup) layout;
             android.transition.TransitionManager.beginDelayedTransition(root);
             AutoTransition transition = new AutoTransition();
             transition.setDuration(2000);
@@ -343,14 +368,13 @@ public class AddFragment extends Fragment {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            ((MainActivity)getActivity()).updateList(true);
-                            ((MainActivity)getActivity()).showSnackbar("Totale aggiunto!");
+                            updateAndGoToList();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Log.e("LOG", "Error! " + e.getLocalizedMessage());
-                    ((MainActivity)getActivity()).showSnackbar("Totale non aggiunto!");
+                    showSnackbar("Totale non aggiunto!");
                 }
             });
         } else {
@@ -385,8 +409,8 @@ public class AddFragment extends Fragment {
                             }
                             for (Purchase item : MainActivity.PURCHASELIST) {
                                 if (item.getEmail().equals(MainActivity.CURRENTUSER.getEmail())
-                                        && item.getType() != 0 && item.getType() != 3
-                                        && item.getYear() == year && item.getMonth() == month && item.getDay() == day) {
+                                        && item.getType() != 0 && item.getType() != 3 && item.getYear() == purchase.getYear()
+                                        && item.getMonth() == purchase.getMonth() && item.getDay() == purchase.getDay()) {
                                     sum += item.getPrice();
                                 }
                             }
@@ -397,14 +421,13 @@ public class AddFragment extends Fragment {
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            ((MainActivity)getActivity()).updateList(true);
-                                            ((MainActivity)getActivity()).showSnackbar("Acquisto aggiunto!");
+                                            updateAndGoToList();
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     Log.e("LOG", "Error! " + e.getLocalizedMessage());
-                                    ((MainActivity)getActivity()).showSnackbar("Acquisto non aggiunto correttamente!");
+                                    showSnackbar("Acquisto non aggiunto correttamente!");
                                 }
                             });
                         }
@@ -412,9 +435,63 @@ public class AddFragment extends Fragment {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Log.e("LOG", "Error! " + e.getLocalizedMessage());
-                    ((MainActivity)getActivity()).showSnackbar("Acquisto non aggiunto!");
+                    showSnackbar("Acquisto non aggiunto!");
                 }
             });
         }
+    }
+
+    // metodo per aggiornare i progressi dell'utente
+    public void updateAndGoToList() {
+        MainActivity.PURCHASELIST = new LinkedList<>();
+        MainActivity.PURCHASEIDLIST = new LinkedList<>();
+        FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+        fStore.collection("purchases").orderBy("year", Query.Direction.DESCENDING)
+                .orderBy("month", Query.Direction.DESCENDING).orderBy("day", Query.Direction.DESCENDING)
+                .orderBy("type").orderBy("price", Query.Direction.DESCENDING).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        int position = 0;
+                        for (DocumentSnapshot document : queryDocumentSnapshots) {
+                            Purchase purchase = document.toObject(Purchase.class);
+                            MainActivity.PURCHASEIDLIST.add(position, document.getId());
+                            MainActivity.PURCHASELIST.add(position, purchase);
+                            position ++;
+
+                            // torna alla home
+                            Intent returnIntent = new Intent();
+                            returnIntent.putExtra("com.frafio.myfinance.purchaseRequest", true);
+                            setResult(Activity.RESULT_OK, returnIntent);
+                            finish();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("LOG", "Error! " + e.getLocalizedMessage());
+            }
+        });
+    }
+
+    // ends this activity (back arrow)
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            this.finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    // snackbar
+    public void showSnackbar(String string) {
+        Snackbar snackbar = Snackbar.make(layout, string, BaseTransientBottomBar.LENGTH_SHORT).setAnchorView(mAddBtn)
+                .setBackgroundTint(ContextCompat.getColor(getApplicationContext(), R.color.snackbar))
+                .setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.inverted_primary_text));
+        TextView tv = (snackbar.getView()).findViewById((R.id.snackbar_text));
+        tv.setTypeface(nunito);
+        snackbar.show();
     }
 }

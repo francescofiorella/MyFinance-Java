@@ -1,13 +1,17 @@
 package com.frafio.myfinance;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +20,6 @@ import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.TextView;
 
-import com.frafio.myfinance.fragments.AddFragment;
 import com.frafio.myfinance.fragments.DashboardFragment;
 import com.frafio.myfinance.fragments.ListFragment;
 import com.frafio.myfinance.fragments.ProfileFragment;
@@ -57,11 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseAuth fAuth;
 
-    // 1 home, 2 list, 3 profile, 4 settings, 5 add
+    // 1 home, 2 list, 3 profile, 4 settings
     int currentFragment;
-    int previousFragment;
-
-    OvershootInterpolator interpolator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +81,8 @@ public class MainActivity extends AppCompatActivity {
         mBottomNavigationView = findViewById(R.id.main_bottomNavView);
         mAddBtn = findViewById(R.id.main_addBtn);
 
-        interpolator = new OvershootInterpolator();
-
         // inizializza i fragments
-        previousFragment = 0;
+        currentFragment = 0;
 
         // controlla se si è appena fatto l'accesso
         fAuth = FirebaseAuth.getInstance();
@@ -120,16 +118,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // imposta il fragment 5
         mAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentFragment == 5) {
-                    goToPreviousFragment();
-                } else {
-                    setFragment(5);
-                    mBottomNavigationView.setSelectedItemId(R.id.placeholder);
-                }
+                ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeClipRevealAnimation(
+                        mAddBtn, 0, 0,
+                        mAddBtn.getMeasuredWidth(), mAddBtn.getMeasuredHeight());
+                Intent intent = new Intent(getApplicationContext(), AddActivity.class);
+                startActivityForResult(intent, 1, activityOptionsCompat.toBundle());
             }
         });
     }
@@ -137,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
     // metodo per cambiare fragment (senza influenzare la bottomNavView)
     public void setFragment(int num) {
         if (currentFragment != num) {
-            previousFragment = currentFragment;
             Fragment mFragmentToSet = null;
             switch (num) {
                 case 1:
@@ -156,39 +151,10 @@ public class MainActivity extends AppCompatActivity {
                     mFragmentTitle.setText("Menu");
                     mFragmentToSet = new MenuFragment();
                     break;
-                case 5:
-                    mFragmentTitle.setText("Acquisto");
-                    mFragmentToSet = new AddFragment();
-                    mAddBtn.animate().setInterpolator(interpolator).rotation(45f).setDuration(150).start();
-                    break;
-            }
-            if (currentFragment == 5) {
-                mAddBtn.animate().setInterpolator(interpolator).rotation(0f).setDuration(150).start();
             }
             getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .replace(R.id.main_frameLayout, mFragmentToSet).commit();
             currentFragment = num;
-        }
-    }
-
-    // metodo per tornare al fragment precedente (cambiando anche la bottomNavView)
-    public void goToPreviousFragment() {
-        switch (previousFragment) {
-            case 1:
-                mBottomNavigationView.setSelectedItemId(R.id.dashboard);
-                break;
-            case 2:
-                mBottomNavigationView.setSelectedItemId(R.id.list);
-                break;
-            case 3:
-                mBottomNavigationView.setSelectedItemId(R.id.profile);
-                break;
-            case 4:
-                mBottomNavigationView.setSelectedItemId(R.id.menu);
-                break;
-            case 5:
-                mBottomNavigationView.setSelectedItemId(R.id.placeholder);
-                break;
         }
     }
 
@@ -214,12 +180,12 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
 
-            updateList(false);
+            updateList();
         }
     }
 
     // metodo per aggiornare i progressi dell'utente
-    public void updateList(boolean goToList) {
+    public void updateList() {
         PURCHASELIST = new LinkedList<>();
         PURCHASEIDLIST = new LinkedList<>();
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
@@ -237,9 +203,7 @@ public class MainActivity extends AppCompatActivity {
                     position ++;
                 }
 
-                if (goToList) {
-                    mBottomNavigationView.setSelectedItemId(R.id.list);
-                } else if (previousFragment == 0) {
+                if (currentFragment == 0) {
                     setFragment(1);
                 }
             }
@@ -251,12 +215,27 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+            boolean purchaseRequest = data.getBooleanExtra("com.frafio.myfinance.purchaseRequest", false);
+            if (purchaseRequest) {
+                if (currentFragment == 2) {
+                    ListFragment fragment = (ListFragment) getSupportFragmentManager().findFragmentById(R.id.main_frameLayout);
+                    fragment.loadPurchasesList();
+                } else {
+                    mBottomNavigationView.setSelectedItemId(R.id.list);
+                }
+                showSnackbar("Acquisto aggiunto!");
+            }
+        }
+    }
+
     // backPressed
     @Override
     public void onBackPressed() {
-        if (currentFragment == 5) {
-            goToPreviousFragment();
-        } else if (currentFragment != 1) {
+        if (currentFragment != 1) {
             mBottomNavigationView.setSelectedItemId(R.id.dashboard);
         } else {
             super.onBackPressed();

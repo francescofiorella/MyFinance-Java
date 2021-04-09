@@ -33,6 +33,27 @@
         <item name="fontFamily">@font/nunito</item>
     </style>
 
+    <!--Dialog theme. -->
+    <style name="ThemeOverlay.MyFinance.AlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="android:backgroundTint">@color/primary</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/TextAppearance.MyFinance.AlertDialog.Title</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/TextAppearance.MyFinance.AlertDialog.Body</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.MyFinance.AlertDialog.Button</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.MyFinance.AlertDialog.Button</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.MyFinance.AlertDialog.Button</item>
+    </style>
+    <style name="TextAppearance.MyFinance.AlertDialog.Title" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="fontFamily">@font/nunito_semibold</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="TextAppearance.MyFinance.AlertDialog.Body" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
+        <item name="fontFamily">@font/nunito</item>
+    </style>
+    <style name="Widget.MyFinance.AlertDialog.Button" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/nav_items</item>
+        <item name="fontFamily">@font/nunito_semibold</item>
+    </style>
+
     <!--Material Fields theme. -->
     <style name="Widget.MyFinance.TextInputLayout.OutlinedBox"
         parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
