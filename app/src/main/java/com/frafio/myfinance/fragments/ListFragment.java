@@ -87,7 +87,7 @@ public class ListFragment extends Fragment {
             holder.prezzoTV.setText(priceString);
 
             if (purchaseList.get(position).getType() == 0) {
-                holder.itemLayout.setClickable(false);
+                holder.itemLayout.setOnClickListener(null);
                 holder.nomeTV.setText(purchaseList.get(position).getName());
                 holder.nomeTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
                 holder.dataLayout.setVisibility(View.VISIBLE);
@@ -106,7 +106,6 @@ public class ListFragment extends Fragment {
 
                 holder.dataTV.setText(dayString + "/" + monthString + "/" + purchaseList.get(position).getYear());
             } else if (purchaseList.get(position).getType() == 1){
-                holder.itemLayout.setClickable(true);
                 holder.nomeTV.setText("   " + purchaseList.get(position).getName());
                 holder.nomeTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
                 holder.dataLayout.setVisibility(View.GONE);
