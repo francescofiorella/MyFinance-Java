@@ -8,6 +8,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import com.frafio.myfinance.objects.ReceiptItem;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -128,6 +130,39 @@ public class ReceiptActivity extends AppCompatActivity {
                 DecimalFormat formatter = (DecimalFormat) nf;
                 formatter.applyPattern("###,###,##0.00");
                 holder.rPriceTV.setText("€ " + formatter.format(model.getPrice()));
+                holder.rItemLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        String voceID = getSnapshots().getSnapshot(position).getId();
+
+                        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(ReceiptActivity.this, R.style.ThemeOverlay_MyFinance_AlertDialog);
+                        builder.setTitle(model.getName());
+                        builder.setMessage("Vuoi eliminare la voce selezionata?");
+                        builder.setNegativeButton("Annulla", null);
+                        builder.setPositiveButton("Elimina", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+                                fStore.collection("purchases").document(purchaseID)
+                                        .collection("receipt").document(voceID).delete()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        showSnackbar("Voce eliminata!");
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                                        showSnackbar("Voce non eliminata!");
+                                    }
+                                });
+                            }
+                        });
+                        builder.show();
+                        return true;
+                    }
+                });
             }
         };
 
