@@ -11,6 +11,7 @@ import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -105,7 +106,7 @@ public class ListFragment extends Fragment {
                 }
 
                 holder.dataTV.setText(dayString + "/" + monthString + "/" + MainActivity.PURCHASELIST.get(position).getYear());
-            } else if (MainActivity.PURCHASELIST.get(position).getType() == 1){
+            } else if (MainActivity.PURCHASELIST.get(position).getType() == 1) {
                 holder.nomeTV.setText("   " + MainActivity.PURCHASELIST.get(position).getName());
                 holder.nomeTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
                 holder.dataLayout.setVisibility(View.GONE);
@@ -121,7 +122,6 @@ public class ListFragment extends Fragment {
                     }
                 });
             } else {
-                holder.itemLayout.setClickable(true);
                 holder.itemLayout.setOnClickListener(null);
                 holder.nomeTV.setText("   " + MainActivity.PURCHASELIST.get(position).getName());
                 holder.nomeTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
@@ -130,6 +130,7 @@ public class ListFragment extends Fragment {
 
             if (!(MainActivity.PURCHASELIST.get(position).getName().equals("Totale")
                     && MainActivity.PURCHASELIST.get(position).getPrice() != 0)) {
+                holder.itemLayout.setEnabled(true);
                 holder.itemLayout.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
@@ -152,7 +153,7 @@ public class ListFragment extends Fragment {
                                     intent.putExtra("com.frafio.myfinance.PURCHASE_YEAR", MainActivity.PURCHASELIST.get(position).getYear());
                                     intent.putExtra("com.frafio.myfinance.PURCHASE_MONTH", MainActivity.PURCHASELIST.get(position).getMonth());
                                     intent.putExtra("com.frafio.myfinance.PURCHASE_DAY", MainActivity.PURCHASELIST.get(position).getDay());
-                                    ((MainActivity)getActivity()).startActivityForResult(intent, 2);
+                                    getActivity().startActivityForResult(intent, 2);
                                 }
                             });
                         } else {
@@ -219,7 +220,8 @@ public class ListFragment extends Fragment {
                     }
                 });
             } else {
-                holder.itemLayout.setClickable(false);
+                holder.itemLayout.setOnLongClickListener(null);
+                holder.itemLayout.setEnabled(false);
             }
         }
 
