@@ -9,6 +9,7 @@ import androidx.core.content.res.ResourcesCompat;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.transition.AutoTransition;
@@ -20,6 +21,7 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -40,10 +42,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class AddActivity extends AppCompatActivity {
@@ -55,10 +60,17 @@ public class AddActivity extends AppCompatActivity {
     EditText mNameET;
     CurrencyEditText mPriceET;
     ConstraintLayout mDateBtn;
+    GridLayout mTypeLayout;
     GridLayout mBigliettoLayout;
     TextView mDateET, mGenBtn, mSpeBtn, mBigBtn, mTIBtn, mAmBtn, mAltroBtn;
+    ImageView mDateArrowImg;
     SwitchMaterial mTotSwitch;
     ExtendedFloatingActionButton mAddBtn;
+
+    int requestCode;
+    String purchaseId, purchaseName;
+    double purchasePrice;
+    int purchaseType, purchasePosition;
 
     int year, month, day;
 
@@ -85,7 +97,9 @@ public class AddActivity extends AppCompatActivity {
         mPriceET = findViewById(R.id.add_price_EditText);
         mDateBtn = findViewById(R.id.add_dateLayout);
         mDateET = findViewById(R.id.add_dateTextView);
+        mDateArrowImg = findViewById(R.id.add_dateArrowImageView);
         mTotSwitch = findViewById(R.id.add_totale_switch);
+        mTypeLayout = findViewById(R.id.add_typeLayout);
         mGenBtn = findViewById(R.id.add_generico_tv);
         mSpeBtn = findViewById(R.id.add_spesa_tv);
         mBigBtn = findViewById(R.id.add_biglietto_tv);
@@ -98,44 +112,81 @@ public class AddActivity extends AppCompatActivity {
         interpolator = new OvershootInterpolator();
         mBigliettoLayout.setAlpha(0f);
 
-        setDatePicker();
+        // stabilisci se bisogna creare un nuovo evento (1) o modificarne uno esistente (2)
+        Intent intent = getIntent();
+        requestCode = intent.getIntExtra("com.frafio.myfinance.REQUESTCODE", 0);
 
-        mTotSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    mNameET.setText("Totale");
-                    mNameET.setEnabled(false);
+        if (requestCode == 1) {
+            // set data odierna
+            year = LocalDate.now().getYear();
+            month = LocalDate.now().getMonthValue();
+            day = LocalDate.now().getDayOfMonth();
 
-                    mPriceET.setText("€ 0.00");
-                    mPriceET.setEnabled(false);
+            mGenBtn.setSelected(true);
 
-                    mNameET.setError(null);
-                    mPriceET.setError(null);
+            setTypeButton();
+            setTotSwitch();
 
+            setDatePicker();
+        } else if (requestCode == 2) {
+            mTotSwitch.setVisibility(View.GONE);
+
+            purchaseId = intent.getStringExtra("com.frafio.myfinance.PURCHASE_ID");
+            purchaseName = intent.getStringExtra("com.frafio.myfinance.PURCHASE_NAME");
+            purchasePrice = intent.getDoubleExtra("com.frafio.myfinance.PURCHASE_PRICE", 0);
+            purchaseType = intent.getIntExtra("com.frafio.myfinance.PURCHASE_TYPE", 0);
+            purchasePosition = intent.getIntExtra("com.frafio.myfinance.PURCHASE_POSITION", 0);
+            year = intent.getIntExtra("com.frafio.myfinance.PURCHASE_YEAR", 0);
+            month = intent.getIntExtra("com.frafio.myfinance.PURCHASE_MONTH", 0);
+            day = intent.getIntExtra("com.frafio.myfinance.PURCHASE_DAY", 0);
+
+            mNameET.setText(purchaseName);
+
+            Locale locale = new Locale("en", "UK");
+            NumberFormat nf = NumberFormat.getInstance(locale);
+            DecimalFormat formatter = (DecimalFormat) nf;
+            formatter.applyPattern("###,###,##0.00");
+            mPriceET.setText("€ " + formatter.format(purchasePrice));
+
+            switch (purchaseType) {
+                case 1:
                     mGenBtn.setEnabled(false);
+                    mSpeBtn.setSelected(true);
+                    mBigBtn.setEnabled(false);
+                    break;
+                case 2:
+                    mGenBtn.setSelected(true);
                     mSpeBtn.setEnabled(false);
                     mBigBtn.setEnabled(false);
-
-                    closeTicketBtn();
-                } else {
-                    mNameET.setText("");
-                    mNameET.setEnabled(true);
-
-                    mPriceET.setText("");
-                    mPriceET.setEnabled(true);
-
-                    mGenBtn.setEnabled(true);
-                    mSpeBtn.setEnabled(true);
-                    mBigBtn.setEnabled(true);
+                    break;
+                case 3:
+                    mGenBtn.setEnabled(false);
+                    mSpeBtn.setEnabled(false);
+                    mBigBtn.setSelected(true);
 
                     setBigliettoLayout();
-                }
+                    break;
             }
-        });
 
-        mGenBtn.setSelected(true);
-        setTypeButton();
+            String dayString, monthString;
+            if (day < 10) {
+                dayString = "0" + day;
+            } else {
+                dayString = day + "";
+            }
+            if (month < 10) {
+                monthString = "0" + month;
+            } else {
+                monthString = month + "";
+            }
+            mDateET.setText(dayString + "/" + monthString + "/" + year);
+            mDateET.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.disabled_text));
+            mDateBtn.setClickable(false);
+            mDateArrowImg.setVisibility(View.GONE);
+
+            mAddBtn.setText("Modifica");
+            mAddBtn.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_create));
+        }
 
         mAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,11 +197,6 @@ public class AddActivity extends AppCompatActivity {
     }
 
     private void setDatePicker() {
-        // set data odierna
-        year = LocalDate.now().getYear();
-        month = LocalDate.now().getMonthValue();
-        day = LocalDate.now().getDayOfMonth();
-
         String dayString, monthString;
         if (day < 10) {
             dayString = "0" + day;
@@ -266,13 +312,6 @@ public class AddActivity extends AppCompatActivity {
         if (mBigBtn.isSelected()) {
             openTicketBtn();
 
-            mTIBtn.setSelected(true);
-            mAmBtn.setSelected(false);
-            mAltroBtn.setSelected(false);
-
-            mNameET.setText("Biglietto TrenItalia");
-            mNameET.setEnabled(false);
-
             mTIBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -314,6 +353,18 @@ public class AddActivity extends AppCompatActivity {
                     }
                 }
             });
+
+            if (requestCode == 2) {
+                if (purchaseName.equals("Biglietto TrenItalia")) {
+                    mTIBtn.performClick();
+                } else if (purchaseName.equals("Biglietto Amtab")) {
+                    mAmBtn.performClick();
+                } else {
+                    mAltroBtn.performClick();
+                }
+            } else {
+                mTIBtn.performClick();
+            }
         } else {
             closeTicketBtn();
         }
@@ -343,6 +394,42 @@ public class AddActivity extends AppCompatActivity {
             transition.setDuration(2000);
             android.transition.TransitionManager.beginDelayedTransition(root, transition);
         }
+    }
+
+    private void setTotSwitch() {
+        mTotSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mNameET.setText("Totale");
+                    mNameET.setEnabled(false);
+
+                    mPriceET.setText("€ 0.00");
+                    mPriceET.setEnabled(false);
+
+                    mNameET.setError(null);
+                    mPriceET.setError(null);
+
+                    mGenBtn.setEnabled(false);
+                    mSpeBtn.setEnabled(false);
+                    mBigBtn.setEnabled(false);
+
+                    closeTicketBtn();
+                } else {
+                    mNameET.setText("");
+                    mNameET.setEnabled(true);
+
+                    mPriceET.setText("");
+                    mPriceET.setEnabled(true);
+
+                    mGenBtn.setEnabled(true);
+                    mSpeBtn.setEnabled(true);
+                    mBigBtn.setEnabled(true);
+
+                    setBigliettoLayout();
+                }
+            }
+        });
     }
 
     private void addPurchase() {
@@ -378,15 +465,6 @@ public class AddActivity extends AppCompatActivity {
                 }
             });
         } else {
-            int type;
-            if (mGenBtn.isSelected()) {
-                type = 2;
-            } else if (mSpeBtn.isSelected()) {
-                type = 1;
-            } else {
-                type = 3;
-            }
-
             double price = mPriceET.getNumericValue();
             String priceString = mPriceET.getText().toString().trim();
             if (TextUtils.isEmpty(priceString)) {
@@ -394,19 +472,71 @@ public class AddActivity extends AppCompatActivity {
                 return;
             }
 
-            Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, price, year, month, day, type);
+            if (requestCode == 1) {
+                int type;
+                if (mGenBtn.isSelected()) {
+                    type = 2;
+                } else if (mSpeBtn.isSelected()) {
+                    type = 1;
+                } else {
+                    type = 3;
+                }
 
-            FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-            fStore.collection("purchases").add(purchase)
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            double sum;
-                            if (purchase.getType() != 3) {
-                                sum = purchase.getPrice();
-                            } else {
-                                sum = 0;
+                Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, price, year, month, day, type);
+
+                FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+                fStore.collection("purchases").add(purchase)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                double sum;
+                                if (purchase.getType() != 3) {
+                                    sum = purchase.getPrice();
+                                } else {
+                                    sum = 0;
+                                }
+                                for (Purchase item : MainActivity.PURCHASELIST) {
+                                    if (item.getEmail().equals(MainActivity.CURRENTUSER.getEmail())
+                                            && item.getType() != 0 && item.getType() != 3 && item.getYear() == purchase.getYear()
+                                            && item.getMonth() == purchase.getMonth() && item.getDay() == purchase.getDay()) {
+                                        sum += item.getPrice();
+                                    }
+                                }
+                                Purchase totalP = new Purchase(MainActivity.CURRENTUSER.getEmail(), "Totale", sum, year, month, day, 0);
+                                FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+                                String totID = year + "" + month + ""+ day;
+                                fStore.collection("purchases").document(totID).set(totalP)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                updateAndGoToList();
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                                        showSnackbar("Acquisto non aggiunto correttamente!");
+                                    }
+                                });
                             }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                        showSnackbar("Acquisto non aggiunto!");
+                    }
+                });
+            } else if (requestCode == 2) {
+                Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, price, year, month, day, purchaseType);
+
+                FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+                fStore.collection("purchases").document(purchaseId).set(purchase)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        MainActivity.PURCHASELIST.set(purchasePosition, purchase);
+                        if (price != purchasePrice) {
+                            double sum = 0;
                             for (Purchase item : MainActivity.PURCHASELIST) {
                                 if (item.getEmail().equals(MainActivity.CURRENTUSER.getEmail())
                                         && item.getType() != 0 && item.getType() != 3 && item.getYear() == purchase.getYear()
@@ -430,14 +560,22 @@ public class AddActivity extends AppCompatActivity {
                                     showSnackbar("Acquisto non aggiunto correttamente!");
                                 }
                             });
+                        } else {
+                            // torna alla home
+                            Intent returnIntent = new Intent();
+                            returnIntent.putExtra("com.frafio.myfinance.purchaseRequest", true);
+                            setResult(Activity.RESULT_OK, returnIntent);
+                            finish();
                         }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.e("LOG", "Error! " + e.getLocalizedMessage());
-                    showSnackbar("Acquisto non aggiunto!");
-                }
-            });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                        showSnackbar("Acquisto non modificato!");
+                    }
+                });
+            }
         }
     }
 
@@ -445,6 +583,7 @@ public class AddActivity extends AppCompatActivity {
     public void updateAndGoToList() {
         MainActivity.PURCHASELIST = new LinkedList<>();
         MainActivity.PURCHASEIDLIST = new LinkedList<>();
+
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
         fStore.collection("purchases").orderBy("year", Query.Direction.DESCENDING)
                 .orderBy("month", Query.Direction.DESCENDING).orderBy("day", Query.Direction.DESCENDING)
@@ -458,13 +597,13 @@ public class AddActivity extends AppCompatActivity {
                             MainActivity.PURCHASEIDLIST.add(position, document.getId());
                             MainActivity.PURCHASELIST.add(position, purchase);
                             position ++;
-
-                            // torna alla home
-                            Intent returnIntent = new Intent();
-                            returnIntent.putExtra("com.frafio.myfinance.purchaseRequest", true);
-                            setResult(Activity.RESULT_OK, returnIntent);
-                            finish();
                         }
+
+                        // torna alla home
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("com.frafio.myfinance.purchaseRequest", true);
+                        setResult(Activity.RESULT_OK, returnIntent);
+                        finish();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override

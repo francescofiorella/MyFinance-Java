@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                         mAddBtn, 0, 0,
                         mAddBtn.getMeasuredWidth(), mAddBtn.getMeasuredHeight());
                 Intent intent = new Intent(getApplicationContext(), AddActivity.class);
+                intent.putExtra("com.frafio.myfinance.REQUESTCODE", 1);
                 startActivityForResult(intent, 1, activityOptionsCompat.toBundle());
             }
         });
@@ -229,10 +230,17 @@ public class MainActivity extends AppCompatActivity {
                 }
                 showSnackbar("Acquisto aggiunto!");
             }
+        } else if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
+            boolean editRequest = data.getBooleanExtra("com.frafio.myfinance.purchaseRequest", false);
+            if (editRequest) {
+                ListFragment fragment = (ListFragment) getSupportFragmentManager().findFragmentById(R.id.main_frameLayout);
+                fragment.loadPurchasesList();
+                showSnackbar("Acquisto modificato!");
+            }
         }
     }
 
-    // backPressed
+    // onBackPressed
     @Override
     public void onBackPressed() {
         if (currentFragment != 1) {

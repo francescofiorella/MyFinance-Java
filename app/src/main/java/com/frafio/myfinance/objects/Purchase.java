@@ -34,6 +34,10 @@ public class Purchase {
         return price;
     }
 
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
     public int getYear() {
         return year;
     }
