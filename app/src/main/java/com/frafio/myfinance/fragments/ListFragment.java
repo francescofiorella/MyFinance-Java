@@ -174,18 +174,18 @@ public class ListFragment extends Fragment {
                                                     mRecyclerView.removeViewAt(position);
                                                     mRecyclerView.getAdapter().notifyItemRemoved(position);
                                                     mRecyclerView.getAdapter().notifyItemRangeChanged(position, MainActivity.PURCHASELIST.size());
-                                                    ((MainActivity)getActivity()).showSnackbar("Acquisto eliminato!");
-                                                } else {
+                                                    ((MainActivity)getActivity()).showSnackbar("Totale eliminato!");
+                                                } else if (MainActivity.PURCHASELIST.get(position).getType() != 3) {
                                                     for (int i = position - 1; i>=0; i--) {
                                                         if (MainActivity.PURCHASELIST.get(i).getType() == 0) {
                                                             totPosition = i;
-                                                            MainActivity.PURCHASELIST.get(i).setPrice(MainActivity.PURCHASELIST.get(i)
-                                                                    .getPrice() - MainActivity.PURCHASELIST.get(position).getPrice());
                                                             FirebaseFirestore fStore = FirebaseFirestore.getInstance();
                                                             fStore.collection("purchases").document(MainActivity.PURCHASEIDLIST.get(i))
                                                                     .set(MainActivity.PURCHASELIST.get(i)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                 @Override
                                                                 public void onSuccess(Void aVoid) {
+                                                                    MainActivity.PURCHASELIST.get(totPosition).setPrice(MainActivity.PURCHASELIST.get(totPosition)
+                                                                            .getPrice() - MainActivity.PURCHASELIST.get(position).getPrice());
                                                                     MainActivity.PURCHASEIDLIST.remove(position);
                                                                     MainActivity.PURCHASELIST.remove(position);
                                                                     mRecyclerView.removeViewAt(position);
@@ -204,6 +204,13 @@ public class ListFragment extends Fragment {
                                                             break;
                                                         }
                                                     }
+                                                } else {
+                                                    MainActivity.PURCHASEIDLIST.remove(position);
+                                                    MainActivity.PURCHASELIST.remove(position);
+                                                    mRecyclerView.removeViewAt(position);
+                                                    mRecyclerView.getAdapter().notifyItemRemoved(position);
+                                                    mRecyclerView.getAdapter().notifyItemRangeChanged(position, MainActivity.PURCHASELIST.size());
+                                                    ((MainActivity)getActivity()).showSnackbar("Acquisto eliminato!");
                                                 }
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {
