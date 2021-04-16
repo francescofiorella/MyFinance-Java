@@ -40,6 +40,7 @@ import java.util.Locale;
 public class ListFragment extends Fragment {
 
     RecyclerView mRecyclerView;
+    TextView mWarningTV;
 
     // utile quando si elimina un acquisto
     int totPosition;
@@ -50,7 +51,16 @@ public class ListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
 
         mRecyclerView = view.findViewById(R.id.list_recyclerView);
-        loadPurchasesList();
+        mWarningTV = view.findViewById(R.id.list_warningTV);
+
+        if (MainActivity.PURCHASELIST.isEmpty()) {
+            mWarningTV.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        } else {
+            mWarningTV.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            loadPurchasesList();
+        }
 
         return view;
     }

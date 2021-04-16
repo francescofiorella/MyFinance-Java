@@ -8,11 +8,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.frafio.myfinance.MainActivity;
 import com.frafio.myfinance.R;
 import com.frafio.myfinance.objects.Purchase;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -21,7 +23,8 @@ import java.util.Locale;
 
 public class DashboardFragment extends Fragment {
 
-    TextView mDayAvgTV, mMonthAvgTV, mTodayTotTV, mTotTV, mNumTotTV, mTicketTotTV, mTrenTotTV, mAmTotTV;
+    ConstraintLayout mStatsLayout;
+    TextView mWarningTV, mDayAvgTV, mMonthAvgTV, mTodayTotTV, mTotTV, mNumTotTV, mTicketTotTV, mTrenTotTV, mAmTotTV;
 
     double dayAvg, monthAvg, todayTot, tot, ticketTot;
     int numTot, trenTot, amTot;
@@ -31,6 +34,8 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
+        mStatsLayout = view.findViewById(R.id.stats_layout);
+        mWarningTV = view.findViewById(R.id.dashboard_warningTV);
         mDayAvgTV = view.findViewById(R.id.dayAvg_TV);
         mMonthAvgTV = view.findViewById(R.id.monthAvg_TV);
         mTodayTotTV = view.findViewById(R.id.todayTot_TV);
@@ -40,7 +45,14 @@ public class DashboardFragment extends Fragment {
         mTrenTotTV = view.findViewById(R.id.trenTot_TV);
         mAmTotTV = view.findViewById(R.id.amTot_TV);
 
-        calculateStats();
+        if (MainActivity.PURCHASELIST.isEmpty()) {
+            mWarningTV.setVisibility(View.VISIBLE);
+            mStatsLayout.setVisibility(View.GONE);
+        } else {
+            mWarningTV.setVisibility(View.GONE);
+            mStatsLayout.setVisibility(View.VISIBLE);
+            calculateStats();
+        }
 
         return view;
     }

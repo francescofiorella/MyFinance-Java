@@ -190,10 +190,10 @@ public class MainActivity extends AppCompatActivity {
         PURCHASELIST = new LinkedList<>();
         PURCHASEIDLIST = new LinkedList<>();
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-        fStore.collection("purchases").orderBy("year", Query.Direction.DESCENDING)
-                .orderBy("month", Query.Direction.DESCENDING).orderBy("day", Query.Direction.DESCENDING)
-                .orderBy("type").orderBy("price", Query.Direction.DESCENDING).get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        fStore.collection("purchases").whereEqualTo("email", fAuth.getCurrentUser().getEmail())
+                .orderBy("year", Query.Direction.DESCENDING).orderBy("month", Query.Direction.DESCENDING)
+                .orderBy("day", Query.Direction.DESCENDING).orderBy("type").orderBy("price", Query.Direction.DESCENDING)
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 int position = 0;
