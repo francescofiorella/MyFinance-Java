@@ -25,7 +25,6 @@ public class DashboardFragment extends Fragment {
 
     ConstraintLayout mStatsLayout;
     TextView mWarningTV, mDayAvgTV, mMonthAvgTV, mTodayTotTV, mTotTV, mNumTotTV, mTicketTotTV, mTrenTotTV, mAmTotTV;
-    MaterialCardView mTodayCardView;
 
     double dayAvg, monthAvg, todayTot, tot, ticketTot;
     int numTot, trenTot, amTot;
@@ -47,7 +46,6 @@ public class DashboardFragment extends Fragment {
         mTicketTotTV = view.findViewById(R.id.ticketTot_TV);
         mTrenTotTV = view.findViewById(R.id.trenTot_TV);
         mAmTotTV = view.findViewById(R.id.amTot_TV);
-        mTodayCardView = view.findViewById(R.id.materialCardView3);
 
         if (MainActivity.PURCHASE_LIST.isEmpty()) {
             mWarningTV.setVisibility(View.VISIBLE);
@@ -135,12 +133,7 @@ public class DashboardFragment extends Fragment {
 
         mDayAvgTV.setText("€ " + formatter.format(dayAvg));
         mMonthAvgTV.setText("€ " + formatter.format(monthAvg));
-        if (todayTot != 0) {
-            mTodayCardView.setVisibility(View.VISIBLE);
-            mTodayTotTV.setText("€ " + formatter.format(todayTot));
-        } else {
-            mTodayCardView.setVisibility(View.GONE);
-        }
+        mTodayTotTV.setText("€ " + formatter.format(todayTot));
         mTotTV.setText("€ " + formatter.format(tot));
         mNumTotTV.setText(numTot + "");
         mTicketTotTV.setText("€ " + formatter.format(ticketTot));
