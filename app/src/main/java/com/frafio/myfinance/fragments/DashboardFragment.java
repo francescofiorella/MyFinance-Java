@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import com.frafio.myfinance.MainActivity;
 import com.frafio.myfinance.R;
 import com.frafio.myfinance.objects.Purchase;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -47,7 +46,7 @@ public class DashboardFragment extends Fragment {
         mTrenTotTV = view.findViewById(R.id.trenTot_TV);
         mAmTotTV = view.findViewById(R.id.amTot_TV);
 
-        if (MainActivity.PURCHASELIST.isEmpty()) {
+        if (MainActivity.PURCHASE_LIST.isEmpty()) {
             mWarningTV.setVisibility(View.VISIBLE);
             mStatsLayout.setVisibility(View.GONE);
         } else {
@@ -71,7 +70,7 @@ public class DashboardFragment extends Fragment {
         int lastMonth = 0;
         int lastYear = 0;
 
-        for (Purchase purchase : MainActivity.PURCHASELIST) {
+        for (Purchase purchase : MainActivity.PURCHASE_LIST) {
             // totale biglietti Amtab
             if (purchase.getName().equals("Biglietto Amtab")) {
                 amTot++;

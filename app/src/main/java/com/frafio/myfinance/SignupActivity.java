@@ -211,7 +211,7 @@ public class SignupActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "onSuccess: user Profile is created for " + fUser.getUid());
-                        MainActivity.CURRENTUSER = user;
+                        MainActivity.CURRENT_USER = user;
                         Intent returnIntent = new Intent();
                         setResult(Activity.RESULT_OK, returnIntent);
                         finish();

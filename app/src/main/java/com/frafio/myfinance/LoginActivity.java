@@ -11,7 +11,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -265,7 +264,7 @@ public class LoginActivity extends AppCompatActivity {
                     fStore.collection("users").document(fUser.getUid()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            MainActivity.CURRENTUSER = user;
+                            MainActivity.CURRENT_USER = user;
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             intent.putExtra("com.frafio.myfinance.userRequest", true);
                             startActivity(intent);

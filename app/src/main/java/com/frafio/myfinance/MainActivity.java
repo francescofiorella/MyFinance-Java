@@ -14,10 +14,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.OvershootInterpolator;
 import android.widget.TextView;
 
 import com.frafio.myfinance.fragments.DashboardFragment;
@@ -46,9 +46,9 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     // definizione variabili
-    static public User CURRENTUSER;
-    static public List<Purchase> PURCHASELIST;
-    static public List<String> PURCHASEIDLIST;
+    static public User CURRENT_USER;
+    static public List<Purchase> PURCHASE_LIST;
+    static public List<String> PURCHASE_ID_LIST;
 
     CoordinatorLayout layout;
     Typeface nunito;
@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     // 1 home, 2 list, 3 profile, 4 settings
     int currentFragment = 0;
 
+    static private final String KEY_FRAGMENT = "com.frafio.myfinance.SAVE_FRAGMENT";
     static private final String TAG = MainActivity.class.getSimpleName();
 
     @Override
@@ -83,17 +84,21 @@ public class MainActivity extends AppCompatActivity {
         mBottomNavigationView = findViewById(R.id.main_bottomNavView);
         mAddBtn = findViewById(R.id.main_addBtn);
 
-        // controlla se si è appena fatto l'accesso
-        fAuth = FirebaseAuth.getInstance();
-        if (getIntent().hasExtra("com.frafio.myfinance.userRequest")){
-            boolean userRequest = getIntent().getExtras().getBoolean("com.frafio.myfinance.userRequest", false);
-            if (userRequest) {
-                showSnackbar("Hai effettuato l'accesso come " + fAuth.getCurrentUser().getDisplayName());
+        if (savedInstanceState != null) {
+            currentFragment = savedInstanceState.getInt(KEY_FRAGMENT);
+        } else {
+            // controlla se si è appena fatto l'accesso
+            fAuth = FirebaseAuth.getInstance();
+            if (getIntent().hasExtra("com.frafio.myfinance.userRequest")){
+                boolean userRequest = getIntent().getExtras().getBoolean("com.frafio.myfinance.userRequest", false);
+                if (userRequest) {
+                    showSnackbar("Hai effettuato l'accesso come " + fAuth.getCurrentUser().getDisplayName());
+                }
             }
-        }
 
-        // aggiorna i dati dell'utente
-        updateCurrentUser();
+            // aggiorna i dati dell'utente
+            updateCurrentUser();
+        }
 
         // imposta la bottomNavView
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -130,6 +135,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_FRAGMENT, currentFragment);
+        Log.e(TAG, "onSave - currentFragment: " + currentFragment);
+    }
+
     // metodo per cambiare fragment (senza influenzare la bottomNavView)
     public void setFragment(int num) {
         if (currentFragment != num) {
@@ -164,13 +176,13 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser fUser = fAuth.getCurrentUser();
 
         if (fUser != null) {
-            if (CURRENTUSER == null) {
+            if (CURRENT_USER == null) {
                 FirebaseFirestore fStore = FirebaseFirestore.getInstance();
                 fStore.collection("users").document(fUser.getUid()).get()
                         .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        CURRENTUSER = documentSnapshot.toObject(User.class);
+                        CURRENT_USER = documentSnapshot.toObject(User.class);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -186,8 +198,8 @@ public class MainActivity extends AppCompatActivity {
 
     // metodo per aggiornare i progressi dell'utente
     public void updateList() {
-        PURCHASELIST = new LinkedList<>();
-        PURCHASEIDLIST = new LinkedList<>();
+        PURCHASE_LIST = new LinkedList<>();
+        PURCHASE_ID_LIST = new LinkedList<>();
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
         fStore.collection("purchases").whereEqualTo("email", fAuth.getCurrentUser().getEmail())
                 .orderBy("year", Query.Direction.DESCENDING).orderBy("month", Query.Direction.DESCENDING)
@@ -198,8 +210,8 @@ public class MainActivity extends AppCompatActivity {
                 int position = 0;
                 for (DocumentSnapshot document : queryDocumentSnapshots) {
                     Purchase purchase = document.toObject(Purchase.class);
-                    PURCHASEIDLIST.add(position, document.getId());
-                    PURCHASELIST.add(position, purchase);
+                    PURCHASE_ID_LIST.add(position, document.getId());
+                    PURCHASE_LIST.add(position, purchase);
                     position ++;
                 }
 

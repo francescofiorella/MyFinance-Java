@@ -4,14 +4,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,16 +22,13 @@ import com.frafio.myfinance.AddActivity;
 import com.frafio.myfinance.MainActivity;
 import com.frafio.myfinance.ReceiptActivity;
 import com.frafio.myfinance.R;
-import com.frafio.myfinance.objects.Purchase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.List;
 import java.util.Locale;
 
 public class ListFragment extends Fragment {
@@ -55,7 +49,7 @@ public class ListFragment extends Fragment {
         mRecyclerView = view.findViewById(R.id.list_recyclerView);
         mWarningTV = view.findViewById(R.id.list_warningTV);
 
-        if (MainActivity.PURCHASELIST.isEmpty()) {
+        if (MainActivity.PURCHASE_LIST.isEmpty()) {
             mWarningTV.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
         } else {
@@ -70,7 +64,7 @@ public class ListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (MainActivity.PURCHASELIST.isEmpty()) {
+        if (MainActivity.PURCHASE_LIST.isEmpty()) {
             mWarningTV.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
         } else {
@@ -108,30 +102,30 @@ public class ListFragment extends Fragment {
             NumberFormat nf = NumberFormat.getInstance(locale);
             DecimalFormat formatter = (DecimalFormat) nf;
             formatter.applyPattern("###,###,##0.00");
-            String priceString = "€ " + formatter.format(MainActivity.PURCHASELIST.get(position).getPrice());
+            String priceString = "€ " + formatter.format(MainActivity.PURCHASE_LIST.get(position).getPrice());
             holder.prezzoTV.setText(priceString);
 
-            if (MainActivity.PURCHASELIST.get(position).getType() == 0) {
+            if (MainActivity.PURCHASE_LIST.get(position).getType() == 0) {
                 holder.itemLayout.setOnClickListener(null);
-                holder.nomeTV.setText(MainActivity.PURCHASELIST.get(position).getName());
+                holder.nomeTV.setText(MainActivity.PURCHASE_LIST.get(position).getName());
                 holder.nomeTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
                 holder.dataLayout.setVisibility(View.VISIBLE);
 
                 String dayString, monthString;
-                if (MainActivity.PURCHASELIST.get(position).getDay() < 10) {
-                    dayString = "0" + MainActivity.PURCHASELIST.get(position).getDay();
+                if (MainActivity.PURCHASE_LIST.get(position).getDay() < 10) {
+                    dayString = "0" + MainActivity.PURCHASE_LIST.get(position).getDay();
                 } else {
-                    dayString = MainActivity.PURCHASELIST.get(position).getDay() + "";
+                    dayString = MainActivity.PURCHASE_LIST.get(position).getDay() + "";
                 }
-                if (MainActivity.PURCHASELIST.get(position).getMonth() < 10) {
-                    monthString = "0" + MainActivity.PURCHASELIST.get(position).getMonth();
+                if (MainActivity.PURCHASE_LIST.get(position).getMonth() < 10) {
+                    monthString = "0" + MainActivity.PURCHASE_LIST.get(position).getMonth();
                 } else {
-                    monthString = MainActivity.PURCHASELIST.get(position).getMonth() + "";
+                    monthString = MainActivity.PURCHASE_LIST.get(position).getMonth() + "";
                 }
 
-                holder.dataTV.setText(dayString + "/" + monthString + "/" + MainActivity.PURCHASELIST.get(position).getYear());
-            } else if (MainActivity.PURCHASELIST.get(position).getType() == 1) {
-                holder.nomeTV.setText("   " + MainActivity.PURCHASELIST.get(position).getName());
+                holder.dataTV.setText(dayString + "/" + monthString + "/" + MainActivity.PURCHASE_LIST.get(position).getYear());
+            } else if (MainActivity.PURCHASE_LIST.get(position).getType() == 1) {
+                holder.nomeTV.setText("   " + MainActivity.PURCHASE_LIST.get(position).getName());
                 holder.nomeTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
                 holder.dataLayout.setVisibility(View.GONE);
 
@@ -139,44 +133,44 @@ public class ListFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getContext(), ReceiptActivity.class);
-                        intent.putExtra("com.frafio.myfinance.purchaseID", MainActivity.PURCHASEIDLIST.get(position));
-                        intent.putExtra("com.frafio.myfinance.purchaseName", MainActivity.PURCHASELIST.get(position).getName());
+                        intent.putExtra("com.frafio.myfinance.purchaseID", MainActivity.PURCHASE_ID_LIST.get(position));
+                        intent.putExtra("com.frafio.myfinance.purchaseName", MainActivity.PURCHASE_LIST.get(position).getName());
                         intent.putExtra("com.frafio.myfinance.purchasePrice", priceString);
                         startActivity(intent);
                     }
                 });
             } else {
                 holder.itemLayout.setOnClickListener(null);
-                holder.nomeTV.setText("   " + MainActivity.PURCHASELIST.get(position).getName());
+                holder.nomeTV.setText("   " + MainActivity.PURCHASE_LIST.get(position).getName());
                 holder.nomeTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
                 holder.dataLayout.setVisibility(View.GONE);
             }
 
-            if (!(MainActivity.PURCHASELIST.get(position).getName().equals("Totale")
-                    && MainActivity.PURCHASELIST.get(position).getPrice() != 0)) {
+            if (!(MainActivity.PURCHASE_LIST.get(position).getName().equals("Totale")
+                    && MainActivity.PURCHASE_LIST.get(position).getPrice() != 0)) {
                 holder.itemLayout.setEnabled(true);
                 holder.itemLayout.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
                         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext(), R.style.ThemeOverlay_MyFinance_AlertDialog);
-                        builder.setTitle(MainActivity.PURCHASELIST.get(position).getName());
+                        builder.setTitle(MainActivity.PURCHASE_LIST.get(position).getName());
 
-                        if (!(MainActivity.PURCHASELIST.get(position).getName().equals("Totale")
-                                && MainActivity.PURCHASELIST.get(position).getPrice() == 0)) {
+                        if (!(MainActivity.PURCHASE_LIST.get(position).getName().equals("Totale")
+                                && MainActivity.PURCHASE_LIST.get(position).getPrice() == 0)) {
                             builder.setMessage("Vuoi modificare o eliminare l'acquisto selezionato?");
                             builder.setNegativeButton("Modifica", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     Intent intent = new Intent(getContext(), AddActivity.class);
                                     intent.putExtra("com.frafio.myfinance.REQUESTCODE", 2);
-                                    intent.putExtra("com.frafio.myfinance.PURCHASE_ID", MainActivity.PURCHASEIDLIST.get(position));
-                                    intent.putExtra("com.frafio.myfinance.PURCHASE_NAME", MainActivity.PURCHASELIST.get(position).getName());
-                                    intent.putExtra("com.frafio.myfinance.PURCHASE_PRICE", MainActivity.PURCHASELIST.get(position).getPrice());
-                                    intent.putExtra("com.frafio.myfinance.PURCHASE_TYPE", MainActivity.PURCHASELIST.get(position).getType());
+                                    intent.putExtra("com.frafio.myfinance.PURCHASE_ID", MainActivity.PURCHASE_ID_LIST.get(position));
+                                    intent.putExtra("com.frafio.myfinance.PURCHASE_NAME", MainActivity.PURCHASE_LIST.get(position).getName());
+                                    intent.putExtra("com.frafio.myfinance.PURCHASE_PRICE", MainActivity.PURCHASE_LIST.get(position).getPrice());
+                                    intent.putExtra("com.frafio.myfinance.PURCHASE_TYPE", MainActivity.PURCHASE_LIST.get(position).getType());
                                     intent.putExtra("com.frafio.myfinance.PURCHASE_POSITION", position);
-                                    intent.putExtra("com.frafio.myfinance.PURCHASE_YEAR", MainActivity.PURCHASELIST.get(position).getYear());
-                                    intent.putExtra("com.frafio.myfinance.PURCHASE_MONTH", MainActivity.PURCHASELIST.get(position).getMonth());
-                                    intent.putExtra("com.frafio.myfinance.PURCHASE_DAY", MainActivity.PURCHASELIST.get(position).getDay());
+                                    intent.putExtra("com.frafio.myfinance.PURCHASE_YEAR", MainActivity.PURCHASE_LIST.get(position).getYear());
+                                    intent.putExtra("com.frafio.myfinance.PURCHASE_MONTH", MainActivity.PURCHASE_LIST.get(position).getMonth());
+                                    intent.putExtra("com.frafio.myfinance.PURCHASE_DAY", MainActivity.PURCHASE_LIST.get(position).getDay());
                                     getActivity().startActivityForResult(intent, 2);
                                 }
                             });
@@ -188,37 +182,37 @@ public class ListFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-                                fStore.collection("purchases").document(MainActivity.PURCHASEIDLIST.get(position)).delete()
+                                fStore.collection("purchases").document(MainActivity.PURCHASE_ID_LIST.get(position)).delete()
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                if (MainActivity.PURCHASELIST.get(position).getName().equals("Totale")) {
-                                                    MainActivity.PURCHASEIDLIST.remove(position);
-                                                    MainActivity.PURCHASELIST.remove(position);
+                                                if (MainActivity.PURCHASE_LIST.get(position).getName().equals("Totale")) {
+                                                    MainActivity.PURCHASE_ID_LIST.remove(position);
+                                                    MainActivity.PURCHASE_LIST.remove(position);
                                                     mRecyclerView.removeViewAt(position);
                                                     mRecyclerView.getAdapter().notifyItemRemoved(position);
-                                                    mRecyclerView.getAdapter().notifyItemRangeChanged(position, MainActivity.PURCHASELIST.size());
+                                                    mRecyclerView.getAdapter().notifyItemRangeChanged(position, MainActivity.PURCHASE_LIST.size());
                                                     ((MainActivity)getActivity()).showSnackbar("Totale eliminato!");
-                                                    if (MainActivity.PURCHASELIST.isEmpty()) {
+                                                    if (MainActivity.PURCHASE_LIST.isEmpty()) {
                                                         mWarningTV.setVisibility(View.VISIBLE);
                                                         mRecyclerView.setVisibility(View.GONE);
                                                     }
-                                                } else if (MainActivity.PURCHASELIST.get(position).getType() != 3) {
+                                                } else if (MainActivity.PURCHASE_LIST.get(position).getType() != 3) {
                                                     for (int i = position - 1; i>=0; i--) {
-                                                        if (MainActivity.PURCHASELIST.get(i).getType() == 0) {
+                                                        if (MainActivity.PURCHASE_LIST.get(i).getType() == 0) {
                                                             totPosition = i;
-                                                            MainActivity.PURCHASELIST.get(totPosition).setPrice(MainActivity.PURCHASELIST.get(totPosition)
-                                                                    .getPrice() - MainActivity.PURCHASELIST.get(position).getPrice());
-                                                            MainActivity.PURCHASEIDLIST.remove(position);
-                                                            MainActivity.PURCHASELIST.remove(position);
+                                                            MainActivity.PURCHASE_LIST.get(totPosition).setPrice(MainActivity.PURCHASE_LIST.get(totPosition)
+                                                                    .getPrice() - MainActivity.PURCHASE_LIST.get(position).getPrice());
+                                                            MainActivity.PURCHASE_ID_LIST.remove(position);
+                                                            MainActivity.PURCHASE_LIST.remove(position);
                                                             FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-                                                            fStore.collection("purchases").document(MainActivity.PURCHASEIDLIST.get(i))
-                                                                    .set(MainActivity.PURCHASELIST.get(i)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            fStore.collection("purchases").document(MainActivity.PURCHASE_ID_LIST.get(i))
+                                                                    .set(MainActivity.PURCHASE_LIST.get(i)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                 @Override
                                                                 public void onSuccess(Void aVoid) {
                                                                     mRecyclerView.removeViewAt(position);
                                                                     mRecyclerView.getAdapter().notifyItemRemoved(position);
-                                                                    mRecyclerView.getAdapter().notifyItemRangeChanged(position, MainActivity.PURCHASELIST.size());
+                                                                    mRecyclerView.getAdapter().notifyItemRangeChanged(position, MainActivity.PURCHASE_LIST.size());
                                                                     mRecyclerView.getAdapter().notifyItemChanged(totPosition);
                                                                     ((MainActivity)getActivity()).showSnackbar("Acquisto eliminato!");
                                                                 }
@@ -233,11 +227,11 @@ public class ListFragment extends Fragment {
                                                         }
                                                     }
                                                 } else {
-                                                    MainActivity.PURCHASEIDLIST.remove(position);
-                                                    MainActivity.PURCHASELIST.remove(position);
+                                                    MainActivity.PURCHASE_ID_LIST.remove(position);
+                                                    MainActivity.PURCHASE_LIST.remove(position);
                                                     mRecyclerView.removeViewAt(position);
                                                     mRecyclerView.getAdapter().notifyItemRemoved(position);
-                                                    mRecyclerView.getAdapter().notifyItemRangeChanged(position, MainActivity.PURCHASELIST.size());
+                                                    mRecyclerView.getAdapter().notifyItemRangeChanged(position, MainActivity.PURCHASE_LIST.size());
                                                     ((MainActivity)getActivity()).showSnackbar("Acquisto eliminato!");
                                                 }
                                             }
@@ -262,7 +256,7 @@ public class ListFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return MainActivity.PURCHASELIST.size();
+            return MainActivity.PURCHASE_LIST.size();
         }
 
         public class PurchaseViewHolder extends RecyclerView.ViewHolder {

@@ -9,7 +9,6 @@ import androidx.core.content.res.ResourcesCompat;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.transition.AutoTransition;
@@ -449,7 +448,7 @@ public class AddActivity extends AppCompatActivity {
         }
 
         if (mTotSwitch.isChecked()) {
-            Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, 0.0, year, month, day, 0);
+            Purchase purchase = new Purchase(MainActivity.CURRENT_USER.getEmail(), name, 0.0, year, month, day, 0);
 
             FirebaseFirestore fStore = FirebaseFirestore.getInstance();
             String totID = year + "" + month + ""+ day;
@@ -484,7 +483,7 @@ public class AddActivity extends AppCompatActivity {
                     type = 3;
                 }
 
-                Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, price, year, month, day, type);
+                Purchase purchase = new Purchase(MainActivity.CURRENT_USER.getEmail(), name, price, year, month, day, type);
 
                 FirebaseFirestore fStore = FirebaseFirestore.getInstance();
                 fStore.collection("purchases").add(purchase)
@@ -497,14 +496,14 @@ public class AddActivity extends AppCompatActivity {
                                 } else {
                                     sum = 0;
                                 }
-                                for (Purchase item : MainActivity.PURCHASELIST) {
-                                    if (item.getEmail().equals(MainActivity.CURRENTUSER.getEmail())
+                                for (Purchase item : MainActivity.PURCHASE_LIST) {
+                                    if (item.getEmail().equals(MainActivity.CURRENT_USER.getEmail())
                                             && item.getType() != 0 && item.getType() != 3 && item.getYear() == purchase.getYear()
                                             && item.getMonth() == purchase.getMonth() && item.getDay() == purchase.getDay()) {
                                         sum += item.getPrice();
                                     }
                                 }
-                                Purchase totalP = new Purchase(MainActivity.CURRENTUSER.getEmail(), "Totale", sum, year, month, day, 0);
+                                Purchase totalP = new Purchase(MainActivity.CURRENT_USER.getEmail(), "Totale", sum, year, month, day, 0);
                                 FirebaseFirestore fStore = FirebaseFirestore.getInstance();
                                 String totID = year + "" + month + ""+ day;
                                 fStore.collection("purchases").document(totID).set(totalP)
@@ -529,24 +528,24 @@ public class AddActivity extends AppCompatActivity {
                     }
                 });
             } else if (requestCode == 2) {
-                Purchase purchase = new Purchase(MainActivity.CURRENTUSER.getEmail(), name, price, year, month, day, purchaseType);
+                Purchase purchase = new Purchase(MainActivity.CURRENT_USER.getEmail(), name, price, year, month, day, purchaseType);
 
                 FirebaseFirestore fStore = FirebaseFirestore.getInstance();
                 fStore.collection("purchases").document(purchaseId).set(purchase)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        MainActivity.PURCHASELIST.set(purchasePosition, purchase);
+                        MainActivity.PURCHASE_LIST.set(purchasePosition, purchase);
                         if (price != purchasePrice) {
                             double sum = 0;
-                            for (Purchase item : MainActivity.PURCHASELIST) {
-                                if (item.getEmail().equals(MainActivity.CURRENTUSER.getEmail())
+                            for (Purchase item : MainActivity.PURCHASE_LIST) {
+                                if (item.getEmail().equals(MainActivity.CURRENT_USER.getEmail())
                                         && item.getType() != 0 && item.getType() != 3 && item.getYear() == purchase.getYear()
                                         && item.getMonth() == purchase.getMonth() && item.getDay() == purchase.getDay()) {
                                     sum += item.getPrice();
                                 }
                             }
-                            Purchase totalP = new Purchase(MainActivity.CURRENTUSER.getEmail(), "Totale", sum, year, month, day, 0);
+                            Purchase totalP = new Purchase(MainActivity.CURRENT_USER.getEmail(), "Totale", sum, year, month, day, 0);
                             FirebaseFirestore fStore = FirebaseFirestore.getInstance();
                             String totID = year + "" + month + ""+ day;
                             fStore.collection("purchases").document(totID).set(totalP)
@@ -583,11 +582,11 @@ public class AddActivity extends AppCompatActivity {
 
     // metodo per aggiornare i progressi dell'utente
     public void updateAndGoToList() {
-        MainActivity.PURCHASELIST = new LinkedList<>();
-        MainActivity.PURCHASEIDLIST = new LinkedList<>();
+        MainActivity.PURCHASE_LIST = new LinkedList<>();
+        MainActivity.PURCHASE_ID_LIST = new LinkedList<>();
 
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-        fStore.collection("purchases").whereEqualTo("email", MainActivity.CURRENTUSER.getEmail())
+        fStore.collection("purchases").whereEqualTo("email", MainActivity.CURRENT_USER.getEmail())
                 .orderBy("year", Query.Direction.DESCENDING).orderBy("month", Query.Direction.DESCENDING)
                 .orderBy("day", Query.Direction.DESCENDING).orderBy("type")
                 .orderBy("price", Query.Direction.DESCENDING).get()
@@ -597,8 +596,8 @@ public class AddActivity extends AppCompatActivity {
                         int position = 0;
                         for (DocumentSnapshot document : queryDocumentSnapshots) {
                             Purchase purchase = document.toObject(Purchase.class);
-                            MainActivity.PURCHASEIDLIST.add(position, document.getId());
-                            MainActivity.PURCHASELIST.add(position, purchase);
+                            MainActivity.PURCHASE_ID_LIST.add(position, document.getId());
+                            MainActivity.PURCHASE_LIST.add(position, purchase);
                             position ++;
                         }
 
