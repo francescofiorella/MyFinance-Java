@@ -232,12 +232,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="15dp"
+                        android:layout_marginVertical="10dp"
                         app:cardBackgroundColor="@color/edit_text"
                         app:cardCornerRadius="@dimen/card_corner_radius"
                         app:cardElevation="@dimen/card_elevation"
-                        app:layout_constraintBottom_toBottomOf="@+id/materialCardView3"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/materialCardView3"
-                        app:layout_constraintTop_toTopOf="@+id/materialCardView3">
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"

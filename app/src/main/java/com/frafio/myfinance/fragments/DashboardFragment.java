@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.frafio.myfinance.MainActivity;
 import com.frafio.myfinance.R;
 import com.frafio.myfinance.objects.Purchase;
+import com.google.android.material.card.MaterialCardView;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -24,6 +25,7 @@ public class DashboardFragment extends Fragment {
 
     ConstraintLayout mStatsLayout;
     TextView mWarningTV, mDayAvgTV, mMonthAvgTV, mTodayTotTV, mTotTV, mNumTotTV, mTicketTotTV, mTrenTotTV, mAmTotTV;
+    MaterialCardView mTodayCardView;
 
     double dayAvg, monthAvg, todayTot, tot, ticketTot;
     int numTot, trenTot, amTot;
@@ -45,6 +47,7 @@ public class DashboardFragment extends Fragment {
         mTicketTotTV = view.findViewById(R.id.ticketTot_TV);
         mTrenTotTV = view.findViewById(R.id.trenTot_TV);
         mAmTotTV = view.findViewById(R.id.amTot_TV);
+        mTodayCardView = view.findViewById(R.id.materialCardView3);
 
         if (MainActivity.PURCHASE_LIST.isEmpty()) {
             mWarningTV.setVisibility(View.VISIBLE);
@@ -52,6 +55,9 @@ public class DashboardFragment extends Fragment {
         } else {
             mWarningTV.setVisibility(View.GONE);
             mStatsLayout.setVisibility(View.VISIBLE);
+        }
+
+        if (savedInstanceState == null) {
             calculateStats();
         }
 
@@ -59,6 +65,7 @@ public class DashboardFragment extends Fragment {
     }
 
     private void calculateStats() {
+        todayTot = 0;
         tot = 0;
         numTot = 0;
         ticketTot = 0;
@@ -128,7 +135,12 @@ public class DashboardFragment extends Fragment {
 
         mDayAvgTV.setText("€ " + formatter.format(dayAvg));
         mMonthAvgTV.setText("€ " + formatter.format(monthAvg));
-        mTodayTotTV.setText("€ " + formatter.format(todayTot));
+        if (todayTot != 0) {
+            mTodayCardView.setVisibility(View.VISIBLE);
+            mTodayTotTV.setText("€ " + formatter.format(todayTot));
+        } else {
+            mTodayCardView.setVisibility(View.GONE);
+        }
         mTotTV.setText("€ " + formatter.format(tot));
         mNumTotTV.setText(numTot + "");
         mTicketTotTV.setText("€ " + formatter.format(ticketTot));

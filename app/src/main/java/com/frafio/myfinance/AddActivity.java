@@ -24,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.cottacush.android.currencyedittext.CurrencyEditText;
 import com.frafio.myfinance.objects.Purchase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -56,8 +55,7 @@ public class AddActivity extends AppCompatActivity {
     Typeface nunito;
 
     MaterialToolbar mToolbar;
-    EditText mNameET;
-    CurrencyEditText mPriceET;
+    EditText mNameET, mPriceET;
     ConstraintLayout mDateBtn;
     GridLayout mTypeLayout;
     GridLayout mBigliettoLayout;
@@ -466,12 +464,12 @@ public class AddActivity extends AppCompatActivity {
                 }
             });
         } else {
-            double price = mPriceET.getNumericValue();
             String priceString = mPriceET.getText().toString().trim();
             if (TextUtils.isEmpty(priceString)) {
                 mPriceET.setError("Inserisci il costo dell'acquisto.");
                 return;
             }
+            double price = Double.parseDouble(priceString);
 
             if (requestCode == 1) {
                 int type;

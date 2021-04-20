@@ -97,7 +97,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.cottacush.android.currencyedittext.CurrencyEditText
+            <EditText
                 android:id="@+id/receipt_price_EditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -107,12 +107,12 @@
                 android:fontFamily="@font/nunito"
                 android:hint="Costo"
                 android:padding="15dp"
-                app:currencySymbol="€"
+                android:drawableEnd="@drawable/ic_euro"
+                android:inputType="numberDecimal"
                 app:layout_constraintBottom_toBottomOf="@+id/receipt_addBtn"
                 app:layout_constraintEnd_toStartOf="@+id/receipt_addBtn"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/receipt_addBtn"
-                app:localeTag="en-US" />
+                app:layout_constraintTop_toTopOf="@+id/receipt_addBtn" />
 
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/receipt_addBtn"

@@ -70,7 +70,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.cottacush.android.currencyedittext.CurrencyEditText
+            <EditText
                 android:id="@+id/add_price_EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -81,8 +81,8 @@
                 android:background="@drawable/bg_edit_text"
                 android:hint="Costo"
                 android:fontFamily="@font/nunito"
-                app:currencySymbol="€"
-                app:localeTag="en-US"
+                android:drawableEnd="@drawable/ic_euro"
+                android:inputType="numberDecimal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/add_name_EditText" />

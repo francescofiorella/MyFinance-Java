@@ -52,7 +52,4 @@ dependencies {
 
     // FirebaseUI for Cloud Firestore library
     implementation 'com.firebaseui:firebase-ui-firestore:7.1.0'
-
-    // Currency field library
-    implementation 'com.cottacush:CurrencyEditText:0.0.7'
 }

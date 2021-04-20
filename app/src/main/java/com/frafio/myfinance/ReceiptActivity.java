@@ -9,14 +9,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,11 +21,8 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.cottacush.android.currencyedittext.CurrencyEditText;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.frafio.myfinance.fragments.ListFragment;
-import com.frafio.myfinance.objects.Purchase;
 import com.frafio.myfinance.objects.ReceiptItem;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -39,10 +32,8 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -57,8 +48,7 @@ public class ReceiptActivity extends AppCompatActivity {
     TextView mTitleTV, mPriceTV;
     RecyclerView mRecyclerView;
     FirestoreRecyclerAdapter adapter;
-    EditText mNameET;
-    CurrencyEditText mPriceET;
+    EditText mNameET, mPriceET;
     ExtendedFloatingActionButton mAddBtn;
 
     String purchaseID, purchaseName, purchasePrice;
@@ -189,7 +179,6 @@ public class ReceiptActivity extends AppCompatActivity {
 
     private void addItem() {
         String name = mNameET.getText().toString().trim();
-        double price = mPriceET.getNumericValue();
         String priceString = mPriceET.getText().toString().trim();
 
         // controlla le info aggiunte
@@ -202,6 +191,7 @@ public class ReceiptActivity extends AppCompatActivity {
             mPriceET.setError("Inserisci il costo dell'acquisto.");
             return;
         }
+        double price = Double.parseDouble(priceString);
 
         ReceiptItem item = new ReceiptItem(name, price);
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
