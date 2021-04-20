@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
 
     // 1 home, 2 list, 3 profile, 4 settings
-    int currentFragment;
+    int currentFragment = 0;
 
     static private final String TAG = MainActivity.class.getSimpleName();
 
@@ -82,9 +82,6 @@ public class MainActivity extends AppCompatActivity {
         mFragmentTitle = findViewById(R.id.main_fragmentTitle);
         mBottomNavigationView = findViewById(R.id.main_bottomNavView);
         mAddBtn = findViewById(R.id.main_addBtn);
-
-        // inizializza i fragments
-        currentFragment = 0;
 
         // controlla se si è appena fatto l'accesso
         fAuth = FirebaseAuth.getInstance();
