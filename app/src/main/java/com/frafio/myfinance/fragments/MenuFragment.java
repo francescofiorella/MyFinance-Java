@@ -18,8 +18,9 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class MenuFragment extends Fragment {
 
-
     MaterialButton mLogoutBtn;
+
+    static private final String TAG = MenuFragment.class.getSimpleName();
 
     @Nullable
     @Override

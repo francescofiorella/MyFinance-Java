@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
     // 1 home, 2 list, 3 profile, 4 settings
     int currentFragment;
 
+    static private final String TAG = MainActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                        Log.e(TAG, "Error! " + e.getLocalizedMessage());
                     }
                 });
             }
@@ -211,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                Log.e(TAG, "Error! " + e.getLocalizedMessage());
             }
         });
     }

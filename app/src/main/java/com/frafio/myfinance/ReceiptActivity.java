@@ -63,6 +63,8 @@ public class ReceiptActivity extends AppCompatActivity {
 
     String purchaseID, purchaseName, purchasePrice;
 
+    static private final String TAG = ReceiptActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -153,7 +155,7 @@ public class ReceiptActivity extends AppCompatActivity {
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                                        Log.e(TAG, "Error! " + e.getLocalizedMessage());
                                         showSnackbar("Voce non eliminata!");
                                     }
                                 });
@@ -214,7 +216,7 @@ public class ReceiptActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                Log.e(TAG, "Error! " + e.getLocalizedMessage());
                 showSnackbar("Voce non aggiunta!");
             }
         });

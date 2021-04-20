@@ -76,6 +76,8 @@ public class AddActivity extends AppCompatActivity {
 
     OvershootInterpolator interpolator;
 
+    static private final String TAG = AddActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -460,7 +462,7 @@ public class AddActivity extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                    Log.e(TAG, "Error! " + e.getLocalizedMessage());
                     showSnackbar("Totale non aggiunto!");
                 }
             });
@@ -514,7 +516,7 @@ public class AddActivity extends AppCompatActivity {
                                         }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                                        Log.e(TAG, "Error! " + e.getLocalizedMessage());
                                         showSnackbar("Acquisto non aggiunto correttamente!");
                                     }
                                 });
@@ -522,7 +524,7 @@ public class AddActivity extends AppCompatActivity {
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                        Log.e(TAG, "Error! " + e.getLocalizedMessage());
                         showSnackbar("Acquisto non aggiunto!");
                     }
                 });
@@ -556,7 +558,7 @@ public class AddActivity extends AppCompatActivity {
                                     }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                                    Log.e(TAG, "Error! " + e.getLocalizedMessage());
                                     showSnackbar("Acquisto non aggiunto correttamente!");
                                 }
                             });
@@ -571,7 +573,7 @@ public class AddActivity extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                        Log.e(TAG, "Error! " + e.getLocalizedMessage());
                         showSnackbar("Acquisto non modificato!");
                     }
                 });
@@ -609,7 +611,7 @@ public class AddActivity extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                Log.e(TAG, "Error! " + e.getLocalizedMessage());
             }
         });
     }

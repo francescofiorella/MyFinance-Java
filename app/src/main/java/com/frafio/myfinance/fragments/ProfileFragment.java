@@ -34,6 +34,8 @@ public class ProfileFragment extends Fragment {
     ImageView mUserImage;
     TextView mUserNameTv, mEmailTv;
 
+    static private final String TAG = ProfileFragment.class.getSimpleName();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

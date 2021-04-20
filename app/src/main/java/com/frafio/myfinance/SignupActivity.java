@@ -52,6 +52,8 @@ public class SignupActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseUser fUser;
 
+    static private final String TAG = MainActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,12 +164,12 @@ public class SignupActivity extends AppCompatActivity {
                 fUser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d("TAG", "Email di verifica inviata!");
+                        Log.d(TAG, "Email di verifica inviata!");
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                        Log.e(TAG, "Error! " + e.getLocalizedMessage());
                     }
                 });
 
@@ -177,7 +179,7 @@ public class SignupActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                Log.e(TAG, "Error! " + e.getLocalizedMessage());
                 if (e instanceof FirebaseAuthWeakPasswordException) {
                     mPasswordLayout.setError("La password inserita non è abbastanza sicura.");
                 } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
@@ -208,7 +210,7 @@ public class SignupActivity extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d("TAG", "onSuccess: user Profile is created for " + fUser.getUid());
+                        Log.d(TAG, "onSuccess: user Profile is created for " + fUser.getUid());
                         MainActivity.CURRENTUSER = user;
                         Intent returnIntent = new Intent();
                         setResult(Activity.RESULT_OK, returnIntent);
@@ -217,7 +219,7 @@ public class SignupActivity extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                        Log.e(TAG, "Error! " + e.getLocalizedMessage());
                         mProgressIndicator.hide();
                         showSnackbar("Account non creato correttamente!");
                     }

@@ -29,6 +29,8 @@ public class DashboardFragment extends Fragment {
     double dayAvg, monthAvg, todayTot, tot, ticketTot;
     int numTot, trenTot, amTot;
 
+    static private final String TAG = DashboardFragment.class.getSimpleName();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

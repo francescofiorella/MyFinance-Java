@@ -45,6 +45,8 @@ public class ListFragment extends Fragment {
     // utile quando si elimina un acquisto
     int totPosition;
 
+    static private final String TAG = ListFragment.class.getSimpleName();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -207,7 +209,7 @@ public class ListFragment extends Fragment {
                                                             }).addOnFailureListener(new OnFailureListener() {
                                                                 @Override
                                                                 public void onFailure(@NonNull Exception e) {
-                                                                    Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                                                                    Log.e(TAG, "Error! " + e.getLocalizedMessage());
                                                                     ((MainActivity)getActivity()).showSnackbar("Acquisto non eliminato correttamente!");
                                                                 }
                                                             });
@@ -226,7 +228,7 @@ public class ListFragment extends Fragment {
                                         }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Log.e("LOG", "Error! " + e.getLocalizedMessage());
+                                        Log.e(TAG, "Error! " + e.getLocalizedMessage());
                                         ((MainActivity)getActivity()).showSnackbar("Acquisto non eliminato correttamente!");
                                     }
                                 });
