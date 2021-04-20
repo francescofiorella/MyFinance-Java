@@ -166,6 +166,9 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .replace(R.id.main_frameLayout, mFragmentToSet).commit();
             currentFragment = num;
+        } else if (currentFragment == 2) {
+            ListFragment fragment = (ListFragment) getSupportFragmentManager().findFragmentById(R.id.main_frameLayout);
+            fragment.scrollListToTop();
         }
     }
 

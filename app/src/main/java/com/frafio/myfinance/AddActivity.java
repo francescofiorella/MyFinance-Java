@@ -403,7 +403,7 @@ public class AddActivity extends AppCompatActivity {
                     mNameET.setText("Totale");
                     mNameET.setEnabled(false);
 
-                    mPriceET.setText("€ 0.00");
+                    mPriceET.setText("0.00");
                     mPriceET.setEnabled(false);
 
                     mNameET.setError(null);

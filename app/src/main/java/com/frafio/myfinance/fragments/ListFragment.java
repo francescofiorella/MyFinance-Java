@@ -274,4 +274,8 @@ public class ListFragment extends Fragment {
             }
         }
     }
+
+    public void scrollListToTop() {
+        mRecyclerView.smoothScrollToPosition(0);
+    }
 }
