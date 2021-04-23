@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.frafio.myfinance">
 
     <application
@@ -9,7 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyFinance">
-        <activity android:name=".AddActivity"></activity>
+        <activity android:name=".AddActivity" />
         <activity android:name=".ReceiptActivity" />
         <activity android:name=".SignupActivity" />
         <activity android:name=".LoginActivity">

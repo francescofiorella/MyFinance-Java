@@ -138,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_FRAGMENT, currentFragment);
-        Log.e(TAG, "onSave - currentFragment: " + currentFragment);
     }
 
     // metodo per cambiare fragment (senza influenzare la bottomNavView)

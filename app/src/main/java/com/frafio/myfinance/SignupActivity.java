@@ -90,7 +90,7 @@ public class SignupActivity extends AppCompatActivity {
         mSignupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String fullName = mFullName.getText().toString();
+                String fullName = mFullName.getText().toString().trim();
                 String email = mEmail.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
                 String passwordAgain = mPasswordAgain.getText().toString().trim();
@@ -153,7 +153,7 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    // register method
+    // signup method
     private void signUp(String fullName, String email, String password) {
 
         fAuth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
