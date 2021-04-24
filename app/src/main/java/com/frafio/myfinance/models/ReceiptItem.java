@@ -1,4 +1,4 @@
-package com.frafio.myfinance.objects;
+package com.frafio.myfinance.models;
 
 public class ReceiptItem {
 

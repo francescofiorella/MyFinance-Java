@@ -13,8 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.frafio.myfinance.MainActivity;
 import com.frafio.myfinance.R;
-import com.frafio.myfinance.objects.Purchase;
-import com.google.android.material.card.MaterialCardView;
+import com.frafio.myfinance.models.Purchase;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
